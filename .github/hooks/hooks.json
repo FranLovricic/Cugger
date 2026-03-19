@@ -3,13 +3,13 @@
     "UserPromptSubmit": [
       {
         "type": "command",
-        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"$input | Add-Content -Path 'C:\\git\\.github\\hooks\\agent_log.txt'\""
+        "command": "powershell.exe -ExecutionPolicy Bypass -File \"D:\\DOTNET-PROJEKTI\\Cugger\\.github\\hooks\\log_input.ps1\""
       }
     ],
     "preToolUse": [
       {
         "type": "command",
-        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"$input | Add-Content -Path 'C:\\git\\.github\\hooks\\agent_log.txt'\""
+        "command": "powershell.exe -ExecutionPolicy Bypass -File \"D:\\DOTNET-PROJEKTI\\Cugger\\.github\\hooks\\log_input.ps1\""
       }
     ]
   }

@@ -1,0 +1,1 @@
+$input | Out-String | Add-Content -Path 'D:\DOTNET-PROJEKTI\Cugger\.github\hooks\agent_log.txt'

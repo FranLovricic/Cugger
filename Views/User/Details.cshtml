@@ -1,0 +1,169 @@
+@model User
+
+@{
+    ViewData["Title"] = $"{Model?.FirstName} {Model?.LastName} - Profil";
+    var checkIns = ViewBag.CheckIns as List<CheckIn>;
+    var friends = ViewBag.Friends as List<User>;
+    var reviews = ViewBag.Reviews as List<Review>;
+}
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-content">
+        <div class="header-main">
+            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                <div class="avatar avatar-lg">
+                    <img src="@Model.AvatarUrl" alt="@Model.FirstName" />
+                </div>
+                <div>
+                    <h1 class="header-title">@Model.FirstName @Model.LastName</h1>
+                    <p style="color: var(--gray); margin-bottom: 1rem;">@@Model.Username</p>
+
+                    @if (!string.IsNullOrEmpty(Model.Bio))
+                    {
+                        <p style="margin-bottom: 1.5rem; font-style: italic;">@Model.Bio</p>
+                    }
+
+                    <div class="header-meta">
+                        <div class="header-meta-item">
+                            <span class="header-meta-label">Check-ini</span>
+                            <span class="header-meta-value">@(checkIns?.Count ?? 0)</span>
+                        </div>
+                        <div class="header-meta-item">
+                            <span class="header-meta-label">Prijatelji</span>
+                            <span class="header-meta-value">@(friends?.Count ?? 0)</span>
+                        </div>
+                        <div class="header-meta-item">
+                            <span class="header-meta-label">Članstvo</span>
+                            <span class="header-meta-value">@Model.RegistrationDate.ToString("MMM yyyy")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="/User" class="btn btn-secondary">Nazad na korisnike</a>
+        </div>
+    </div>
+</div>
+
+<!-- CHECK-INS SECTION -->
+<div class="section">
+    <h2 class="section-title">📍 Check-ini</h2>
+    
+    @if (checkIns?.Any() == true)
+    {
+        <div class="grid grid-2">
+            @foreach (var checkIn in checkIns)
+            {
+                <a href="/CheckIn/Details/@checkIn.Id" style="text-decoration: none; color: inherit;">
+                    <div class="checkin-card">
+                        <div class="checkin-header">
+                            <div class="checkin-user">
+                                <div>
+                                    <div class="checkin-user-name">Beer #@checkIn.BeerId</div>
+                                    <div class="checkin-user-time">@checkIn.CreatedAt.ToString("dd.MM.yyyy")</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="checkin-beer">
+                            <div class="checkin-beer-content">
+                                <div class="checkin-beer-icon">🍻</div>
+                                <div class="checkin-info">
+                                    <div class="checkin-beer-name">Venue #@checkIn.VenueId</div>
+                                    @if (!string.IsNullOrEmpty(checkIn.Comment))
+                                    {
+                                        <div style="font-size: 0.875rem; color: var(--gray); margin-top: 0.5rem;">@checkIn.Comment</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="checkin-footer">
+                            <div class="checkin-rating">
+                                <span>★</span>
+                                <span>@checkIn.Rating.ToString("F1")</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="section-empty">
+            <div class="section-empty-icon">📭</div>
+            <p>Nema check-inova.</p>
+        </div>
+    }
+</div>
+
+<!-- FRIENDS SECTION -->
+<div class="section">
+    <h2 class="section-title">👥 Prijatelji</h2>
+    
+    @if (friends?.Any() == true)
+    {
+        <div class="grid grid-3">
+            @foreach (var friend in friends)
+            {
+                <a href="/User/Details/@friend.Id" style="text-decoration: none; color: inherit;">
+                    <div class="card">
+                        <div class="card-body" style="text-align: center;">
+                            <div class="avatar avatar-lg" style="margin: 0 auto 1rem;">
+                                <img src="@friend.AvatarUrl" alt="@friend.FirstName" />
+                            </div>
+                            <h3 class="card-title" style="font-size: 1rem;">@friend.FirstName @friend.LastName</h3>
+                            <p style="font-size: 0.875rem; color: var(--gray); margin-bottom: 0;">@@friend.Username</p>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="section-empty">
+            <div class="section-empty-icon">👤</div>
+            <p>Nema prijatelja.</p>
+        </div>
+    }
+</div>
+
+<!-- REVIEWS SECTION -->
+<div class="section">
+    <h2 class="section-title">⭐ Moje Recenzije</h2>
+    
+    @if (reviews?.Any() == true)
+    {
+        <div class="grid grid-2">
+            @foreach (var review in reviews)
+            {
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title" style="color: var(--primary); font-size: 0.95rem; margin-bottom: 0.5rem;">Beer #@review.BeerId</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: var(--warning);">★ @review.Rating.ToString("F1")</span>
+                            <span style="color: var(--gray); font-size: 0.875rem;">@review.CreatedAt.ToString("dd.MM.yyyy")</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-style: italic;">@review.Comment</p>
+                    </div>
+                    <div class="card-footer">
+                        <span style="font-size: 0.875rem; color: var(--gray);">👍 @review.Likes likova</span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="section-empty">
+            <div class="section-empty-icon">📝</div>
+            <p>Nema recenzija.</p>
+        </div>
+    }
+</div>

@@ -1,0 +1,48 @@
+@model List<Brewery>
+
+@{
+    ViewData["Title"] = "Pivovare - Cugger";
+}
+
+<div class="header">
+    <div class="header-main">
+        <h1 class="page-title">🏭 Pivovare</h1>
+        <p class="page-subtitle">Otkrijte pivovare iz cijelog svijeta</p>
+    </div>
+</div>
+
+@if (Model?.Any() == true)
+{
+    <div class="grid grid-3">
+        @foreach (var brewery in Model)
+        {
+            <a href="/Brewery/Details/@brewery.Id" style="text-decoration: none; color: inherit;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title" style="margin-bottom: 0;">@brewery.Name</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="margin-bottom: 1rem;">
+                            <p style="font-size: 0.875rem; margin-bottom: 0.5rem;"><strong>Lokacija:</strong> @brewery.City, @brewery.Country</p>
+                            <p style="font-size: 0.875rem; margin-bottom: 0.5rem;"><strong>Osnovano:</strong> @brewery.FoundedYear</p>
+                        </div>
+                        @if (!string.IsNullOrEmpty(brewery.Description))
+                        {
+                            <p style="font-size: 0.875rem; color: var(--gray); margin-bottom: 0.5rem;">@brewery.Description</p>
+                        }
+                    </div>
+                    <div class="card-footer">
+                        <a href="@brewery.WebsiteUrl" target="_blank" style="color: var(--primary); text-decoration: none; font-size: 0.875rem;">Posjetite stranicu →</a>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}
+else
+{
+    <div class="section-empty">
+        <div class="section-empty-icon">🏭</div>
+        <p>Nema pivovaara.</p>
+    </div>
+}

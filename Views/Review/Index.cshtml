@@ -1,0 +1,47 @@
+@model List<Review>
+
+@{
+    ViewData["Title"] = "Recenzije - Cugger";
+}
+
+<div class="header">
+    <div class="header-main">
+        <h1 class="page-title">⭐ Sve Recenzije</h1>
+        <p class="page-subtitle">Čitajte recenzije piva od zajednice</p>
+    </div>
+</div>
+
+@if (Model?.Any() == true)
+{
+    <div class="grid grid-2">
+        @foreach (var review in Model)
+        {
+            <a href="/Review/Details/@review.Id" style="text-decoration: none; color: inherit;">
+                <div class="card">
+                    <div class="card-header">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="font-weight: 600;">Korisnik #@review.UserId</span>
+                            <span style="color: var(--warning); font-weight: 600;">★ @review.Rating.ToString("F1")</span>
+                        </div>
+                        <div style="font-size: 0.875rem; color: var(--gray);">
+                            Beer #@review.BeerId • @review.CreatedAt.ToString("dd.MM.yyyy")
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-style: italic;">@review.Comment</p>
+                    </div>
+                    <div class="card-footer">
+                        <span style="font-size: 0.875rem; color: var(--gray);">👍 @review.Likes likova</span>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}
+else
+{
+    <div class="section-empty">
+        <div class="section-empty-icon">📝</div>
+        <p>Nema recenzija.</p>
+    </div>
+}

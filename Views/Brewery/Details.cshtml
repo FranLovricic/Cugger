@@ -1,0 +1,72 @@
+@model Brewery
+
+@{
+    ViewData["Title"] = $"{Model?.Name} - Pivovara";
+    var beers = ViewBag.Beers as List<Beer>;
+}
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-content">
+        <div class="header-main">
+            <h1 class="header-title">@Model.Name</h1>
+            <p style="color: var(--gray); margin-bottom: 1rem;">🏭 @Model.City, @Model.Country</p>
+
+            <div class="header-meta">
+                <div class="header-meta-item">
+                    <span class="header-meta-label">Osnovano</span>
+                    <span class="header-meta-value">@Model.FoundedYear</span>
+                </div>
+                <div class="header-meta-item">
+                    <span class="header-meta-label">Piva</span>
+                    <span class="header-meta-value">@(beers?.Count ?? 0)</span>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <p style="margin-top: 1.5rem; line-height: 1.6;">@Model.Description</p>
+            }
+        </div>
+        <div class="header-actions">
+            <a href="/Brewery" class="btn btn-secondary">Nazad na pivovare</a>
+            @if (!string.IsNullOrEmpty(Model.WebsiteUrl))
+            {
+                <a href="@Model.WebsiteUrl" target="_blank" class="btn btn-primary">Posjetite stranicu</a>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- BEERS SECTION -->
+<div class="section">
+    <h2 class="section-title">🍺 Piva Pivovare</h2>
+    
+    @if (beers?.Any() == true)
+    {
+        <div class="grid grid-4">
+            @foreach (var beer in beers)
+            {
+                <a href="/Beer/Details/@beer.Id" style="text-decoration: none; color: inherit;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="font-size: 2rem; text-align: center; margin-bottom: 1rem;">🍺</div>
+                            <h3 class="card-title" style="font-size: 1.1rem; margin-bottom: 0.75rem;">@beer.Name</h3>
+                            <div class="tag tag-style" style="display: inline-block; margin-bottom: 1rem;">@beer.Style</div>
+                            <div style="font-size: 0.875rem; color: var(--gray);">
+                                @beer.ABV% ABV • @beer.IBU IBU
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="section-empty">
+            <div class="section-empty-icon">🍺</div>
+            <p>Nema piva iz ove pivovare.</p>
+        </div>
+    }
+</div>

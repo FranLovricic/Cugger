@@ -1,8 +1,160 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard - Cugger";
+    var recentCheckIns = ViewBag.RecentCheckIns as List<CheckIn>;
+    var topBeers = ViewBag.TopRatedBeers as List<Beer>;
+    var activeUsers = ViewBag.MostActiveUsers as List<User>;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- HERO SECTION -->
+<div style="margin-bottom: 3rem; padding: 2rem; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, transparent 100%); border-radius: 1rem; border-left: 4px solid var(--primary);">
+    <h1 class="page-title">Dobrodošli u Cugger 🍺</h1>
+    <p class="page-subtitle">Pratite piva, nađite nove okusse i spojite se sa zajednicom ljubitelja piva</p>
+</div>
+
+<!-- STATS ROW -->
+<div class="grid grid-3" style="margin-bottom: 3rem;">
+    <div class="stat-card">
+        <div class="stat-label">Ukupno Korisnika</div>
+        <div class="stat-number">@ViewBag.TotalUsers</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Piva u Bazi</div>
+        <div class="stat-number">@ViewBag.TotalBeers</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Check-ini</div>
+        <div class="stat-number">@ViewBag.TotalCheckIns</div>
+    </div>
+</div>
+
+<!-- RECENT CHECK-INS SECTION -->
+<div class="section">
+    <h2 class="section-title">📍 Nedavni Check-ini</h2>
+    
+    @if (recentCheckIns?.Any() == true)
+    {
+        <div class="grid grid-2">
+            @foreach (var checkIn in recentCheckIns)
+            {
+                <a href="/CheckIn/Details/@checkIn.Id" style="text-decoration: none; color: inherit;">
+                    <div class="checkin-card">
+                        <div class="checkin-header">
+                            <div class="checkin-user">
+                                <div class="avatar avatar-sm">
+                                    <img src="https://ui-avatars.com/api/?name=User@(checkIn.UserId)&background=F59E0B&color=fff" alt="User" />
+                                </div>
+                                <div>
+                                    <div class="checkin-user-name">Korisnik #@checkIn.UserId</div>
+                                    <div class="checkin-user-time">@checkIn.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="checkin-beer">
+                            <div class="checkin-beer-content">
+                                <div class="checkin-beer-icon">🍻</div>
+                                <div class="checkin-info">
+                                    <div class="checkin-beer-name">Beer #@checkIn.BeerId</div>
+                                    <div class="checkin-beer-meta">
+                                        <span>📍 Venue #@checkIn.VenueId</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(checkIn.Comment))
+                                    {
+                                        <div class="checkin-beer-venue">@checkIn.Comment</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="checkin-footer">
+                            <div class="checkin-rating">
+                                <span>★</span>
+                                <span>@checkIn.Rating.ToString("F1")</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="section-empty">
+            <div class="section-empty-icon">📭</div>
+            <p>Nema check-inova. Budite prvi!</p>
+        </div>
+    }
+</div>
+
+<!-- TOP RATED BEERS SECTION -->
+<div class="section">
+    <h2 class="section-title">⭐ Najbolje Ocijenjeno Pivo</h2>
+    
+    @if (topBeers?.Any() == true)
+    {
+        <div class="grid grid-4">
+            @foreach (var beer in topBeers)
+            {
+                <a href="/Beer/Details/@beer.Id" style="text-decoration: none; color: inherit;">
+                    <div class="card">
+                        <div class="card-body" style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🍺</div>
+                            <h3 class="card-title" style="font-size: 1rem; margin-bottom: 0.5rem;">@beer.Name</h3>
+                            <div class="tag tag-style" style="display: inline-block; margin-bottom: 1rem;">@beer.Style</div>
+                            <div style="margin-bottom: 0.5rem; font-weight: 600; color: var(--warning);">
+                                ★ 4.5/5.0
+                            </div>
+                            <div style="font-size: 0.875rem; color: var(--gray);">
+                                @beer.ABV% ABV • @beer.IBU IBU
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="section-empty">
+            <div class="section-empty-icon">📊</div>
+            <p>Nema podataka o pivi.</p>
+        </div>
+    }
+</div>
+
+<!-- MOST ACTIVE USERS SECTION -->
+<div class="section">
+    <h2 class="section-title">👥 Najaktivniji Korisnici</h2>
+    
+    @if (activeUsers?.Any() == true)
+    {
+        <div class="card">
+            <ul class="list">
+                @foreach (var user in activeUsers)
+                {
+                    <li class="list-item">
+                        <div class="avatar avatar-md">
+                            <img src="@user.AvatarUrl" alt="@user.FirstName" />
+                        </div>
+                        <a href="/User/Details/@user.Id" style="text-decoration: none; color: inherit;">
+                            <div class="list-item-content">
+                                <div class="list-item-title">@user.FirstName @user.LastName</div>
+                                <div class="list-item-subtitle">@@user.Username</div>
+                            </div>
+                        </a>
+                        <div class="list-item-meta">
+                            <span>📍 ~3 check-inova</span>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+    else
+    {
+        <div class="section-empty">
+            <div class="section-empty-icon">👤</div>
+            <p>Nema aktivnih korisnika.</p>
+        </div>
+    }
 </div>

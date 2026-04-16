@@ -1,0 +1,66 @@
+@model List<CheckIn>
+
+@{
+    ViewData["Title"] = "Check-ini - Cugger";
+}
+
+<div class="header">
+    <div class="header-main">
+        <h1 class="page-title">📍 Svi Check-ini</h1>
+        <p class="page-subtitle">Istražite sve check-ine iz zajednice</p>
+    </div>
+</div>
+
+@if (Model?.Any() == true)
+{
+    <div class="grid grid-2">
+        @foreach (var checkIn in Model)
+        {
+            <a href="/CheckIn/Details/@checkIn.Id" style="text-decoration: none; color: inherit;">
+                <div class="checkin-card">
+                    <div class="checkin-header">
+                        <div class="checkin-user">
+                            <div class="avatar avatar-sm">
+                                <img src="https://ui-avatars.com/api/?name=User@(checkIn.UserId)&background=F59E0B&color=fff" alt="User" />
+                            </div>
+                            <div>
+                                <div class="checkin-user-name">Korisnik #@checkIn.UserId</div>
+                                <div class="checkin-user-time">@checkIn.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checkin-beer">
+                        <div class="checkin-beer-content">
+                            <div class="checkin-beer-icon">🍻</div>
+                            <div class="checkin-info">
+                                <div class="checkin-beer-name">Beer #@checkIn.BeerId</div>
+                                <div class="checkin-beer-meta">
+                                    <span>📍 Venue #@checkIn.VenueId</span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(checkIn.Comment))
+                                {
+                                    <div style="font-size: 0.875rem; color: var(--gray); margin-top: 0.5rem;">@checkIn.Comment</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checkin-footer">
+                        <div class="checkin-rating">
+                            <span>★</span>
+                            <span>@checkIn.Rating.ToString("F1")</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}
+else
+{
+    <div class="section-empty">
+        <div class="section-empty-icon">📭</div>
+        <p>Nema check-inova.</p>
+    </div>
+}

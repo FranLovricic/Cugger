@@ -1,0 +1,108 @@
+@model Review
+
+@{
+    ViewData["Title"] = "Recenzija Detaljno";
+    var user = ViewBag.User as User;
+    var beer = ViewBag.Beer as Beer;
+    var brewery = ViewBag.Brewery as Brewery;
+}
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-content">
+        <div class="header-main">
+            <div style="display: flex; gap: 2rem; align-items: flex-start;">
+                <div style="font-size: 4rem;"><span style="color: var(--warning);">★</span></div>
+                <div style="flex: 1;">
+                    <h1 class="header-title">Recenzija: @Model.Rating.ToString("F1")/5.0</h1>
+                    <p style="color: var(--gray); margin-bottom: 1.5rem;">
+                        @if (user != null)
+                        {
+                            <a href="/User/Details/@user.Id" style="color: var(--primary); text-decoration: none;">@user.FirstName @user.LastName</a>
+                        }
+                    </p>
+
+                    <div class="header-meta">
+                        <div class="header-meta-item">
+                            <span class="header-meta-label">Kreirano</span>
+                            <span class="header-meta-value">@Model.CreatedAt.ToString("dd.MM.yyyy")</span>
+                        </div>
+                        <div class="header-meta-item">
+                            <span class="header-meta-label">Likovi</span>
+                            <span class="header-meta-value">👍 @Model.Likes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="/Review" class="btn btn-secondary">Nazad na recenzije</a>
+        </div>
+    </div>
+</div>
+
+<!-- BEER SECTION -->
+@if (beer != null)
+{
+    <div class="section">
+        <h2 class="section-title">🍺 Recenzirano Pivo</h2>
+        <div class="grid grid-2">
+            <div>
+                <div class="card">
+                    <div class="card-body">
+                        <div style="font-size: 2.5rem; text-align: center; margin-bottom: 1rem;">🍺</div>
+                        <h3 class="card-title" style="font-size: 1.125rem; margin-bottom: 1rem;">@beer.Name</h3>
+                        <div class="tag tag-style" style="display: inline-block; margin-bottom: 1rem;">@beer.Style</div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
+                            <div>
+                                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--gray);">Jačina</div>
+                                <div style="font-size: 1.25rem; font-weight: 600;">@beer.ABV%</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--gray);">Gorčina</div>
+                                <div style="font-size: 1.25rem; font-weight: 600;">@beer.IBU</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/Beer/Details/@beer.Id" style="color: var(--primary); text-decoration: none;">Pogledaj pivo →</a>
+                    </div>
+                </div>
+            </div>
+            @if (brewery != null)
+            {
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" style="margin-bottom: 0;">@brewery.Name</h3>
+                        </div>
+                        <div class="card-body">
+                            <p style="margin-bottom: 1rem;">@brewery.City, @brewery.Country</p>
+                            <p style="font-size: 0.875rem; color: var(--gray);">@brewery.Description</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/Brewery/Details/@brewery.Id" style="color: var(--primary); text-decoration: none;">Pogledaj pivovaru →</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<!-- COMMENT SECTION -->
+@if (!string.IsNullOrEmpty(Model.Comment))
+{
+    <div class="section">
+        <h2 class="section-title">💬 Recenzija</h2>
+        <div class="card">
+            <div class="card-body">
+                <p style="font-style: italic; line-height: 1.6; font-size: 1.125rem;">@Model.Comment</p>
+            </div>
+            <div class="card-footer">
+                <span style="font-size: 0.875rem; color: var(--gray);">👍 @Model.Likes likova</span>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,52 @@
+@model List<User>
+
+@{
+    ViewData["Title"] = "Korisnici - Cugger";
+    ViewBag.Breadcrumbs = new[] {
+        new { Title = "Dashboard", Url = "/", IsCurrent = false },
+        new { Title = "Korisnici", Url = "/User", IsCurrent = true }
+    };
+}
+
+<div class="header">
+    <div class="header-main">
+        <h1 class="page-title">👥 Korisnici Zajednice</h1>
+        <p class="page-subtitle">Nađite i pratite druge ljubitelje piva</p>
+    </div>
+</div>
+
+@if (Model?.Any() == true)
+{
+    <div class="card">
+        <ul class="list">
+            @foreach (var user in Model)
+            {
+                <li class="list-item">
+                    <div class="avatar avatar-md">
+                        <img src="@user.AvatarUrl" alt="@user.FirstName" />
+                    </div>
+                    <a href="/User/Details/@user.Id" style="text-decoration: none; color: inherit;">
+                        <div class="list-item-content">
+                            <div class="list-item-title">@user.FirstName @user.LastName</div>
+                            <div class="list-item-subtitle">@@user.Username</div>
+                            @if (!string.IsNullOrEmpty(user.Bio))
+                            {
+                                <p style="font-size: 0.875rem; color: var(--gray); margin-top: 0.25rem;">@user.Bio</p>
+                            }
+                        </div>
+                    </a>
+                    <div class="list-item-meta">
+                        <span>📅 Članstvo od @user.RegistrationDate.ToString("MMM yyyy")</span>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+}
+else
+{
+    <div class="section-empty">
+        <div class="section-empty-icon">👤</div>
+        <p>Nema korisnika.</p>
+    </div>
+}

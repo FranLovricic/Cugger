@@ -1,9 +1,11 @@
 using Cugger.Models;
+using Cugger.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<CuggerDataService>(CuggerDataService.Instance);
 
 var app = builder.Build();
 

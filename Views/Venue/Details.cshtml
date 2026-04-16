@@ -10,9 +10,10 @@
 <div class="header">
     <div class="header-content">
         <div class="header-main">
+            <div class="section-label">Lokacija</div>
             <h1 class="header-title">@Model.Name</h1>
-            <p style="color: var(--gray); margin-bottom: 1rem;">📍 @Model.Address</p>
-            <p style="color: var(--gray); margin-bottom: 1.5rem;">@Model.City, @Model.Country</p>
+            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">📍 @Model.Address</p>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">@Model.City, @Model.Country</p>
 
             <div class="header-meta">
                 <div class="header-meta-item">
@@ -21,23 +22,24 @@
                 </div>
                 <div class="header-meta-item">
                     <span class="header-meta-label">Koordinate</span>
-                    <span class="header-meta-value" style="font-size: 0.875rem;">@Model.Latitude, @Model.Longitude</span>
+                    <span class="header-meta-value" style="font-size: 0.9rem;">@Model.Latitude, @Model.Longitude</span>
                 </div>
             </div>
         </div>
         <div class="header-actions">
-            <a href="/Venue" class="btn btn-secondary">Nazad na lokale</a>
+            <a href="/Venue" class="btn btn-secondary">← Nazad</a>
         </div>
     </div>
 </div>
 
-<!-- CHECK-INS SECTION -->
-<div class="section">
-    <h2 class="section-title">📍 Check-ini na ovoj lokaciji</h2>
-    
+<!-- CHECK-INS -->
+<section class="section reveal">
+    <div class="section-label">Aktivnost</div>
+    <h2 class="section-title" style="font-size: 1.75rem;">Check-ini na ovoj lokaciji</h2>
+
     @if (checkIns?.Any() == true)
     {
-        <div class="grid grid-2">
+        <div class="grid grid-2 stagger">
             @foreach (var checkIn in checkIns)
             {
                 <a href="/CheckIn/Details/@checkIn.Id" style="text-decoration: none; color: inherit;">
@@ -45,7 +47,7 @@
                         <div class="checkin-header">
                             <div class="checkin-user">
                                 <div class="avatar avatar-sm">
-                                    <img src="https://ui-avatars.com/api/?name=User@(checkIn.UserId)&background=F59E0B&color=fff" alt="User" />
+                                    <img src="https://ui-avatars.com/api/?name=User@(checkIn.UserId)&background=F59E0B&color=111" alt="User" />
                                 </div>
                                 <div>
                                     <div class="checkin-user-name">Korisnik #@checkIn.UserId</div>
@@ -53,7 +55,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="checkin-beer">
                             <div class="checkin-beer-content">
                                 <div class="checkin-beer-icon">🍻</div>
@@ -61,17 +62,13 @@
                                     <div class="checkin-beer-name">Beer #@checkIn.BeerId</div>
                                     @if (!string.IsNullOrEmpty(checkIn.Comment))
                                     {
-                                        <div style="font-size: 0.875rem; color: var(--gray); margin-top: 0.5rem;">@checkIn.Comment</div>
+                                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">@checkIn.Comment</div>
                                     }
                                 </div>
                             </div>
                         </div>
-
                         <div class="checkin-footer">
-                            <div class="checkin-rating">
-                                <span>★</span>
-                                <span>@checkIn.Rating.ToString("F1")</span>
-                            </div>
+                            <div class="checkin-rating"><span>★</span><span>@checkIn.Rating.ToString("F1")</span></div>
                         </div>
                     </div>
                 </a>
@@ -80,9 +77,6 @@
     }
     else
     {
-        <div class="section-empty">
-            <div class="section-empty-icon">📭</div>
-            <p>Nema check-inova na ovoj lokaciji.</p>
-        </div>
+        <div class="section-empty"><div class="section-empty-icon">📭</div><p>Nema check-inova na ovoj lokaciji.</p></div>
     }
-</div>
+</section>

@@ -8,16 +8,15 @@
     };
 }
 
-<div class="header">
-    <div class="header-main">
-        <h1 class="page-title">👥 Korisnici Zajednice</h1>
-        <p class="page-subtitle">Nađite i pratite druge ljubitelje piva</p>
-    </div>
+<div class="page-header">
+    <div class="section-label">Ljudi</div>
+    <h1 class="page-title">Korisnici</h1>
+    <p class="page-subtitle">Nađite i pratite druge ljubitelje piva.</p>
 </div>
 
 @if (Model?.Any() == true)
 {
-    <div class="card">
+    <div class="card" style="margin-top: 1rem;">
         <ul class="list">
             @foreach (var user in Model)
             {
@@ -25,18 +24,18 @@
                     <div class="avatar avatar-md">
                         <img src="@user.AvatarUrl" alt="@user.FirstName" />
                     </div>
-                    <a href="/User/Details/@user.Id" style="text-decoration: none; color: inherit;">
+                    <a href="/User/Details/@user.Id">
                         <div class="list-item-content">
                             <div class="list-item-title">@user.FirstName @user.LastName</div>
-                            <div class="list-item-subtitle">@@user.Username</div>
+                            <div class="list-item-subtitle">@@@@user.Username</div>
                             @if (!string.IsNullOrEmpty(user.Bio))
                             {
-                                <p style="font-size: 0.875rem; color: var(--gray); margin-top: 0.25rem;">@user.Bio</p>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">@user.Bio</p>
                             }
                         </div>
                     </a>
                     <div class="list-item-meta">
-                        <span>📅 Članstvo od @user.RegistrationDate.ToString("MMM yyyy")</span>
+                        <span>Članstvo od @user.RegistrationDate.ToString("MMM yyyy")</span>
                     </div>
                 </li>
             }
@@ -45,8 +44,5 @@
 }
 else
 {
-    <div class="section-empty">
-        <div class="section-empty-icon">👤</div>
-        <p>Nema korisnika.</p>
-    </div>
+    <div class="section-empty"><div class="section-empty-icon">👤</div><p>Nema korisnika.</p></div>
 }

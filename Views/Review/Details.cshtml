@@ -12,13 +12,14 @@
     <div class="header-content">
         <div class="header-main">
             <div style="display: flex; gap: 2rem; align-items: flex-start;">
-                <div style="font-size: 4rem;"><span style="color: var(--warning);">★</span></div>
+                <div style="font-size: 3.5rem; color: var(--warning);">★</div>
                 <div style="flex: 1;">
-                    <h1 class="header-title">Recenzija: @Model.Rating.ToString("F1")/5.0</h1>
-                    <p style="color: var(--gray); margin-bottom: 1.5rem;">
+                    <div class="section-label">Recenzija</div>
+                    <h1 class="header-title">@Model.Rating.ToString("F1") / 5.0</h1>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
                         @if (user != null)
                         {
-                            <a href="/User/Details/@user.Id" style="color: var(--primary); text-decoration: none;">@user.FirstName @user.LastName</a>
+                            <a href="/User/Details/@user.Id" class="link-arrow" style="display: inline-flex;">@user.FirstName @user.LastName <span>→</span></a>
                         }
                     </p>
 
@@ -36,37 +37,37 @@
             </div>
         </div>
         <div class="header-actions">
-            <a href="/Review" class="btn btn-secondary">Nazad na recenzije</a>
+            <a href="/Review" class="btn btn-secondary">← Nazad</a>
         </div>
     </div>
 </div>
 
-<!-- BEER SECTION -->
+<!-- BEER -->
 @if (beer != null)
 {
-    <div class="section">
-        <h2 class="section-title">🍺 Recenzirano Pivo</h2>
-        <div class="grid grid-2">
+    <section class="section reveal">
+        <div class="section-label">Pivo</div>
+        <h2 class="section-title" style="font-size: 1.75rem;">@beer.Name</h2>
+        <div class="grid grid-2 stagger">
             <div>
                 <div class="card">
-                    <div class="card-body">
-                        <div style="font-size: 2.5rem; text-align: center; margin-bottom: 1rem;">🍺</div>
-                        <h3 class="card-title" style="font-size: 1.125rem; margin-bottom: 1rem;">@beer.Name</h3>
-                        <div class="tag tag-style" style="display: inline-block; margin-bottom: 1rem;">@beer.Style</div>
-
+                    <div class="card-body" style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🍺</div>
+                        <h3 class="card-title" style="margin-bottom: 0.75rem;">@beer.Name</h3>
+                        <div class="tag tag-style" style="margin-bottom: 1rem;">@beer.Style</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
                             <div>
-                                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--gray);">Jačina</div>
-                                <div style="font-size: 1.25rem; font-weight: 600;">@beer.ABV%</div>
+                                <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">ABV</div>
+                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--white);">@beer.ABV%</div>
                             </div>
                             <div>
-                                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--gray);">Gorčina</div>
-                                <div style="font-size: 1.25rem; font-weight: 600;">@beer.IBU</div>
+                                <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">IBU</div>
+                                <div style="font-size: 1.25rem; font-weight: 700; color: var(--white);">@beer.IBU</div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="/Beer/Details/@beer.Id" style="color: var(--primary); text-decoration: none;">Pogledaj pivo →</a>
+                        <a href="/Beer/Details/@beer.Id" class="link-arrow" style="font-size: 0.85rem;">Pogledaj pivo <span>→</span></a>
                     </div>
                 </div>
             </div>
@@ -74,35 +75,34 @@
             {
                 <div>
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title" style="margin-bottom: 0;">@brewery.Name</h3>
-                        </div>
+                        <div class="card-header"><h3 class="card-title">@brewery.Name</h3></div>
                         <div class="card-body">
-                            <p style="margin-bottom: 1rem;">@brewery.City, @brewery.Country</p>
-                            <p style="font-size: 0.875rem; color: var(--gray);">@brewery.Description</p>
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">📍 @brewery.City, @brewery.Country</p>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">@brewery.Description</p>
                         </div>
                         <div class="card-footer">
-                            <a href="/Brewery/Details/@brewery.Id" style="color: var(--primary); text-decoration: none;">Pogledaj pivovaru →</a>
+                            <a href="/Brewery/Details/@brewery.Id" class="link-arrow" style="font-size: 0.85rem;">Pogledaj pivovaru <span>→</span></a>
                         </div>
                     </div>
                 </div>
             }
         </div>
-    </div>
+    </section>
 }
 
-<!-- COMMENT SECTION -->
+<!-- COMMENT -->
 @if (!string.IsNullOrEmpty(Model.Comment))
 {
-    <div class="section">
-        <h2 class="section-title">💬 Recenzija</h2>
+    <div class="divider"></div>
+    <section class="section reveal">
+        <div class="section-label">Misao</div>
         <div class="card">
-            <div class="card-body">
-                <p style="font-style: italic; line-height: 1.6; font-size: 1.125rem;">@Model.Comment</p>
+            <div class="card-body" style="padding: 2rem;">
+                <p style="font-style: italic; line-height: 1.7; font-size: 1.1rem; color: var(--text-secondary);">@Model.Comment</p>
             </div>
             <div class="card-footer">
-                <span style="font-size: 0.875rem; color: var(--gray);">👍 @Model.Likes likova</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">👍 @Model.Likes likova</span>
             </div>
         </div>
-    </div>
+    </section>
 }

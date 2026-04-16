@@ -4,29 +4,27 @@
     ViewData["Title"] = "Lokale - Cugger";
 }
 
-<div class="header">
-    <div class="header-main">
-        <h1 class="page-title">📍 Sve Lokale</h1>
-        <p class="page-subtitle">Otkrijte gdje se obavljaju check-ini</p>
-    </div>
+<div class="page-header">
+    <div class="section-label">Mjesta</div>
+    <h1 class="page-title">Lokale</h1>
+    <p class="page-subtitle">Otkrijte gdje se obavljaju check-ini.</p>
 </div>
 
 @if (Model?.Any() == true)
 {
-    <div class="grid grid-3">
+    <div class="grid grid-3 stagger">
         @foreach (var venue in Model)
         {
             <a href="/Venue/Details/@venue.Id" style="text-decoration: none; color: inherit;">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title" style="margin-bottom: 0;">@venue.Name</h3>
+                        <h3 class="card-title">@venue.Name</h3>
                     </div>
                     <div class="card-body">
-                        <p style="font-size: 0.875rem; margin-bottom: 0.5rem;"><strong>Adresa:</strong> @venue.Address</p>
-                        <p style="font-size: 0.875rem; margin-bottom: 1rem;"><strong>Grad:</strong> @venue.City, @venue.Country</p>
-
-                        <div style="font-size: 0.75rem; color: var(--gray); background-color: var(--light-gray); padding: 0.5rem; border-radius: 0.25rem;">
-                            📍 @venue.Latitude, @venue.Longitude
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.25rem;">📍 @venue.Address</p>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">@venue.City, @venue.Country</p>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); background: rgba(255,255,255,0.03); padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                            @venue.Latitude, @venue.Longitude
                         </div>
                     </div>
                 </div>
@@ -36,8 +34,5 @@
 }
 else
 {
-    <div class="section-empty">
-        <div class="section-empty-icon">📍</div>
-        <p>Nema lokala.</p>
-    </div>
+    <div class="section-empty"><div class="section-empty-icon">📍</div><p>Nema lokala.</p></div>
 }

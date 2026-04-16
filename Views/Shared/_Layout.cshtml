@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Cugger</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/cugger.css" />
 </head>
 <body>
@@ -16,7 +19,7 @@
             <ul class="navbar-menu">
                 <li>
                     <a href="/" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
-                        Dashboard
+                        Feed
                     </a>
                 </li>
                 <li>
@@ -48,7 +51,7 @@
         <div class="container">
             @if (ViewBag.Breadcrumbs != null)
             {
-                <div class="breadcrumb">
+                <div class="breadcrumb" style="padding-top: 1rem;">
                     @foreach (var item in ViewBag.Breadcrumbs)
                     {
                         <span class="breadcrumb-item">
@@ -72,8 +75,41 @@
     <!-- FOOTER -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 Cugger - Untappd za programere. Svi piva su fiktivni.</p>
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand">🍺 Cugger</div>
+                    <p class="footer-desc">Vaša zajednica za otkrivanje, ocjenjivanje i dijeljenje iskustava s pivom.</p>
+                </div>
+                <div>
+                    <div class="footer-heading">Istraži</div>
+                    <ul class="footer-links">
+                        <li><a href="/Beer">Piva</a></li>
+                        <li><a href="/Brewery">Pivovare</a></li>
+                        <li><a href="/Venue">Lokale</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="footer-heading">Zajednica</div>
+                    <ul class="footer-links">
+                        <li><a href="/CheckIn">Check-ini</a></li>
+                        <li><a href="/Review">Recenzije</a></li>
+                        <li><a href="/Friendship">Prijateljstva</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="footer-heading">Profil</div>
+                    <ul class="footer-links">
+                        <li><a href="/User">Korisnici</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Cugger — Svi piva su fiktivni.</span>
+                <span>Napravljeno s 🍺</span>
+            </div>
         </div>
     </footer>
+
+    <script src="~/js/site.js"></script>
 </body>
 </html>

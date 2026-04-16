@@ -10,10 +10,10 @@
 <div class="header">
     <div class="header-content">
         <div class="header-main">
-            <h1 class="header-title">👥 Prijateljstvo</h1>
-            <p style="color: var(--gray); margin-bottom: 1.5rem;">Veza između korisnika</p>
+            <div class="section-label">Prijateljstvo</div>
+            <h1 class="header-title">Veza između korisnika</h1>
 
-            <div class="header-meta">
+            <div class="header-meta" style="margin-top: 1.5rem;">
                 <div class="header-meta-item">
                     <span class="header-meta-label">Kreirano</span>
                     <span class="header-meta-value">@Model.CreatedAt.ToString("dd.MM.yyyy")</span>
@@ -21,33 +21,34 @@
             </div>
         </div>
         <div class="header-actions">
-            <a href="/Friendship" class="btn btn-secondary">Nazad na prijateljstva</a>
+            <a href="/Friendship" class="btn btn-secondary">← Nazad</a>
         </div>
     </div>
 </div>
 
-<!-- FRIENDSHIP DETAILS SECTION -->
-<div class="section">
-    <h2 class="section-title">👥 Korisnici</h2>
-    
-    <div class="grid grid-2">
+<!-- USERS -->
+<section class="section reveal">
+    <div class="section-label">Korisnici</div>
+    <h2 class="section-title" style="font-size: 1.75rem;">Prijatelji</h2>
+
+    <div class="grid grid-2 stagger">
         @if (fromUser != null)
         {
             <a href="/User/Details/@fromUser.Id" style="text-decoration: none; color: inherit;">
                 <div class="card">
-                    <div class="card-body" style="text-align: center;">
-                        <div class="avatar avatar-lg" style="margin: 0 auto 1rem;">
+                    <div class="card-body" style="text-align: center; padding: 2.5rem;">
+                        <div class="avatar avatar-lg" style="margin: 0 auto 1.25rem;">
                             <img src="@fromUser.AvatarUrl" alt="@fromUser.FirstName" />
                         </div>
-                        <h3 class="card-title" style="font-size: 1.1rem; margin-bottom: 0.5rem;">@fromUser.FirstName @fromUser.LastName</h3>
-                        <p style="font-size: 0.875rem; color: var(--gray); margin-bottom: 1rem;">@@fromUser.Username</p>
+                        <h3 class="card-title" style="font-size: 1.05rem; margin-bottom: 0.25rem;">@fromUser.FirstName @fromUser.LastName</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">@@@fromUser.Username</p>
                         @if (!string.IsNullOrEmpty(fromUser.Bio))
                         {
-                            <p style="font-size: 0.875rem; color: var(--gray); margin-bottom: 0;">@fromUser.Bio</p>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">@fromUser.Bio</p>
                         }
                     </div>
                     <div class="card-footer">
-                        <a href="/User/Details/@fromUser.Id" style="color: var(--primary); text-decoration: none;">Pogledaj profil →</a>
+                        <span class="link-arrow" style="font-size: 0.85rem;">Pogledaj profil <span>→</span></span>
                     </div>
                 </div>
             </a>
@@ -57,22 +58,22 @@
         {
             <a href="/User/Details/@toUser.Id" style="text-decoration: none; color: inherit;">
                 <div class="card">
-                    <div class="card-body" style="text-align: center;">
-                        <div class="avatar avatar-lg" style="margin: 0 auto 1rem;">
+                    <div class="card-body" style="text-align: center; padding: 2.5rem;">
+                        <div class="avatar avatar-lg" style="margin: 0 auto 1.25rem;">
                             <img src="@toUser.AvatarUrl" alt="@toUser.FirstName" />
                         </div>
-                        <h3 class="card-title" style="font-size: 1.1rem; margin-bottom: 0.5rem;">@toUser.FirstName @toUser.LastName</h3>
-                        <p style="font-size: 0.875rem; color: var(--gray); margin-bottom: 1rem;">@@toUser.Username</p>
+                        <h3 class="card-title" style="font-size: 1.05rem; margin-bottom: 0.25rem;">@toUser.FirstName @toUser.LastName</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">@@@toUser.Username</p>
                         @if (!string.IsNullOrEmpty(toUser.Bio))
                         {
-                            <p style="font-size: 0.875rem; color: var(--gray); margin-bottom: 0;">@toUser.Bio</p>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">@toUser.Bio</p>
                         }
                     </div>
                     <div class="card-footer">
-                        <a href="/User/Details/@toUser.Id" style="color: var(--primary); text-decoration: none;">Pogledaj profil →</a>
+                        <span class="link-arrow" style="font-size: 0.85rem;">Pogledaj profil <span>→</span></span>
                     </div>
                 </div>
             </a>
         }
     </div>
-</div>
+</section>

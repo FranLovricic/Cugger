@@ -11,17 +11,18 @@
 <div class="header">
     <div class="header-content">
         <div class="header-main">
-            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
-                <div class="avatar avatar-lg">
+            <div style="display: flex; gap: 2rem; align-items: flex-start;">
+                <div class="avatar avatar-xl">
                     <img src="@Model.AvatarUrl" alt="@Model.FirstName" />
                 </div>
                 <div>
+                    <div class="section-label">Profil</div>
                     <h1 class="header-title">@Model.FirstName @Model.LastName</h1>
-                    <p style="color: var(--gray); margin-bottom: 1rem;">@@Model.Username</p>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">@@@Model.Username</p>
 
                     @if (!string.IsNullOrEmpty(Model.Bio))
                     {
-                        <p style="margin-bottom: 1.5rem; font-style: italic;">@Model.Bio</p>
+                        <p style="margin-bottom: 1.5rem; font-style: italic; color: var(--text-secondary);">@Model.Bio</p>
                     }
 
                     <div class="header-meta">
@@ -42,18 +43,19 @@
             </div>
         </div>
         <div class="header-actions">
-            <a href="/User" class="btn btn-secondary">Nazad na korisnike</a>
+            <a href="/User" class="btn btn-secondary">← Nazad</a>
         </div>
     </div>
 </div>
 
-<!-- CHECK-INS SECTION -->
-<div class="section">
-    <h2 class="section-title">📍 Check-ini</h2>
-    
+<!-- CHECK-INS -->
+<section class="section reveal">
+    <div class="section-label">Aktivnost</div>
+    <h2 class="section-title" style="font-size: 1.75rem;">Check-ini</h2>
+
     @if (checkIns?.Any() == true)
     {
-        <div class="grid grid-2">
+        <div class="grid grid-2 stagger">
             @foreach (var checkIn in checkIns)
             {
                 <a href="/CheckIn/Details/@checkIn.Id" style="text-decoration: none; color: inherit;">
@@ -66,7 +68,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="checkin-beer">
                             <div class="checkin-beer-content">
                                 <div class="checkin-beer-icon">🍻</div>
@@ -74,17 +75,13 @@
                                     <div class="checkin-beer-name">Venue #@checkIn.VenueId</div>
                                     @if (!string.IsNullOrEmpty(checkIn.Comment))
                                     {
-                                        <div style="font-size: 0.875rem; color: var(--gray); margin-top: 0.5rem;">@checkIn.Comment</div>
+                                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">@checkIn.Comment</div>
                                     }
                                 </div>
                             </div>
                         </div>
-
                         <div class="checkin-footer">
-                            <div class="checkin-rating">
-                                <span>★</span>
-                                <span>@checkIn.Rating.ToString("F1")</span>
-                            </div>
+                            <div class="checkin-rating"><span>★</span><span>@checkIn.Rating.ToString("F1")</span></div>
                         </div>
                     </div>
                 </a>
@@ -93,30 +90,30 @@
     }
     else
     {
-        <div class="section-empty">
-            <div class="section-empty-icon">📭</div>
-            <p>Nema check-inova.</p>
-        </div>
+        <div class="section-empty"><div class="section-empty-icon">📭</div><p>Nema check-inova.</p></div>
     }
-</div>
+</section>
 
-<!-- FRIENDS SECTION -->
-<div class="section">
-    <h2 class="section-title">👥 Prijatelji</h2>
-    
+<div class="divider"></div>
+
+<!-- FRIENDS -->
+<section class="section reveal">
+    <div class="section-label">Društvo</div>
+    <h2 class="section-title" style="font-size: 1.75rem;">Prijatelji</h2>
+
     @if (friends?.Any() == true)
     {
-        <div class="grid grid-3">
+        <div class="grid grid-3 stagger">
             @foreach (var friend in friends)
             {
                 <a href="/User/Details/@friend.Id" style="text-decoration: none; color: inherit;">
                     <div class="card">
-                        <div class="card-body" style="text-align: center;">
+                        <div class="card-body" style="text-align: center; padding: 2rem;">
                             <div class="avatar avatar-lg" style="margin: 0 auto 1rem;">
                                 <img src="@friend.AvatarUrl" alt="@friend.FirstName" />
                             </div>
                             <h3 class="card-title" style="font-size: 1rem;">@friend.FirstName @friend.LastName</h3>
-                            <p style="font-size: 0.875rem; color: var(--gray); margin-bottom: 0;">@@friend.Username</p>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">@@@friend.Username</p>
                         </div>
                     </div>
                 </a>
@@ -125,35 +122,35 @@
     }
     else
     {
-        <div class="section-empty">
-            <div class="section-empty-icon">👤</div>
-            <p>Nema prijatelja.</p>
-        </div>
+        <div class="section-empty"><div class="section-empty-icon">👤</div><p>Nema prijatelja.</p></div>
     }
-</div>
+</section>
 
-<!-- REVIEWS SECTION -->
-<div class="section">
-    <h2 class="section-title">⭐ Moje Recenzije</h2>
-    
+<div class="divider"></div>
+
+<!-- REVIEWS -->
+<section class="section reveal">
+    <div class="section-label">Recenzije</div>
+    <h2 class="section-title" style="font-size: 1.75rem;">Moje recenzije</h2>
+
     @if (reviews?.Any() == true)
     {
-        <div class="grid grid-2">
+        <div class="grid grid-2 stagger">
             @foreach (var review in reviews)
             {
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title" style="color: var(--primary); font-size: 0.95rem; margin-bottom: 0.5rem;">Beer #@review.BeerId</h4>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="color: var(--warning);">★ @review.Rating.ToString("F1")</span>
-                            <span style="color: var(--gray); font-size: 0.875rem;">@review.CreatedAt.ToString("dd.MM.yyyy")</span>
+                            <span style="color: var(--warning); font-weight: 700;">★ @review.Rating.ToString("F1")</span>
+                            <span style="color: var(--text-muted); font-size: 0.8rem;">@review.CreatedAt.ToString("dd.MM.yyyy")</span>
                         </div>
                     </div>
                     <div class="card-body">
-                        <p style="font-style: italic;">@review.Comment</p>
+                        <p style="font-style: italic; color: var(--text-secondary);">@review.Comment</p>
                     </div>
                     <div class="card-footer">
-                        <span style="font-size: 0.875rem; color: var(--gray);">👍 @review.Likes likova</span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">👍 @review.Likes likova</span>
                     </div>
                 </div>
             }
@@ -161,9 +158,6 @@
     }
     else
     {
-        <div class="section-empty">
-            <div class="section-empty-icon">📝</div>
-            <p>Nema recenzija.</p>
-        </div>
+        <div class="section-empty"><div class="section-empty-icon">📝</div><p>Nema recenzija.</p></div>
     }
-</div>
+</section>

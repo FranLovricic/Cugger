@@ -1,0 +1,31 @@
+@* Two dots with growing connection line and pulsing heart between them *@
+<div class="page-decor">
+    <svg class="friend-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Two avatar circles -->
+        <g transform="translate(40, 100)">
+            <circle cx="0" cy="0" r="22" fill="#F59E0B" stroke="#92400E" stroke-width="2" />
+            <text x="0" y="7" font-size="22" text-anchor="middle">🍺</text>
+        </g>
+        <g transform="translate(160, 100)">
+            <circle cx="0" cy="0" r="22" fill="#FCD34D" stroke="#92400E" stroke-width="2" />
+            <text x="0" y="7" font-size="22" text-anchor="middle">🍻</text>
+        </g>
+
+        <!-- Connection line (grows from left to right) -->
+        <line class="friend-line" x1="65" y1="100" x2="135" y2="100" />
+
+        <!-- Animated dots traveling along line -->
+        <circle class="friend-dot d1" cx="80"  cy="100" r="3" />
+        <circle class="friend-dot d2" cx="120" cy="100" r="3" />
+
+        <!-- Heart in the middle -->
+        <g class="friend-heart" transform="translate(100, 100)">
+            <path d="M 0 6
+                     C 0 6, -12 -2, -12 -10
+                     C -12 -16, -6 -18, 0 -10
+                     C 6 -18, 12 -16, 12 -10
+                     C 12 -2, 0 6, 0 6 Z"
+                  fill="#EF4444" stroke="#7F1D1D" stroke-width="1" />
+        </g>
+    </svg>
+</div>

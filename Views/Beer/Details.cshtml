@@ -6,6 +6,7 @@
     var checkIns = ViewBag.CheckIns as List<CheckIn>;
     var reviews = ViewBag.Reviews as List<Review>;
     var avgRating = ViewBag.AverageRating as double? ?? 0;
+    var ratingCount = ViewBag.RatingCount as int? ?? 0;
 }
 
 <!-- HEADER -->
@@ -16,10 +17,10 @@
                 <div style="font-size: 4rem;">🍺</div>
                 <div style="flex: 1;">
                     <div class="section-label">Pivo</div>
-                    <h1 class="header-title">@Model.Name</h1>
+                    <h1 class="header-title">@Model!.Name</h1>
                     @if (brewery != null)
                     {
-                        <a href="/Brewery/Details/@brewery.Id" class="link-arrow" style="margin-bottom: 1.5rem; display: inline-flex;">
+                        <a href="/pivovara/@brewery.Id" class="link-arrow" style="margin-bottom: 1.5rem; display: inline-flex;">
                             @brewery.Name <span>→</span>
                         </a>
                     }
@@ -39,7 +40,9 @@
                         </div>
                         <div class="header-meta-item">
                             <span class="header-meta-label">Ocjena</span>
-                            <span class="header-meta-value" style="color: var(--warning);">★ @avgRating.ToString("F1")</span>
+                            <span class="header-meta-value" style="color: var(--warning);">
+                                ★ @avgRating.ToString("F1") <small style="color: var(--text-muted);">(@ratingCount)</small>
+                            </span>
                         </div>
                     </div>
 
@@ -52,7 +55,31 @@
         </div>
         <div class="header-actions">
             <a href="/Beer" class="btn btn-secondary">← Nazad</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a href="/CheckIn/Create?beerId=@Model.Id" class="btn btn-primary">+ Check-in 🍻</a>
+                <a href="/Review/Create?beerId=@Model.Id" class="btn btn-secondary">+ Recenzija</a>
+            }
         </div>
+    </div>
+</div>
+
+<!-- ABV / IBU / Rating "brutalist" stat blokovi -->
+<div class="stat-blocks reveal" style="margin: 3rem 0;">
+    <div class="stat-block">
+        <div class="stat-block-value">@Model.ABV%</div>
+        <div class="stat-block-label">Alkohol</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width: @Math.Min(Model.ABV * 10, 100)%;"></div></div>
+    </div>
+    <div class="stat-block">
+        <div class="stat-block-value">@Model.IBU</div>
+        <div class="stat-block-label">Gorčina (IBU)</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width: @Math.Min(Model.IBU, 100)%;"></div></div>
+    </div>
+    <div class="stat-block">
+        <div class="stat-block-value">@avgRating.ToString("F1")</div>
+        <div class="stat-block-label">Prosjek (★/5)</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width: @(avgRating * 20)%;"></div></div>
     </div>
 </div>
 
@@ -71,17 +98,17 @@
                         <div class="checkin-header">
                             <div class="checkin-user">
                                 <div class="avatar avatar-sm">
-                                    <img src="https://ui-avatars.com/api/?name=User@(checkIn.UserId)&background=F59E0B&color=111" alt="User" />
+                                    <img src="@(checkIn.User?.AvatarUrl ?? "https://ui-avatars.com/api/?name=User")" alt="@checkIn.User?.Username" />
                                 </div>
                                 <div>
-                                    <div class="checkin-user-name">Korisnik #@checkIn.UserId</div>
+                                    <div class="checkin-user-name">@(checkIn.User?.FirstName) @(checkIn.User?.LastName)</div>
                                     <div class="checkin-user-time">@checkIn.CreatedAt.ToString("dd.MM.yyyy")</div>
                                 </div>
                             </div>
                         </div>
                         <div class="checkin-beer">
                             <div class="checkin-beer-content">
-                                <div class="checkin-beer-icon">📍 Venue #@checkIn.VenueId</div>
+                                <div class="checkin-beer-icon">📍 @(checkIn.Venue?.Name ?? "Lokacija")</div>
                                 @if (!string.IsNullOrEmpty(checkIn.Comment))
                                 {
                                     <div class="checkin-info"><p style="font-style: italic; color: var(--text-secondary);">@checkIn.Comment</p></div>
@@ -118,7 +145,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-weight: 600;">Korisnik #@review.UserId</span>
+                                <span style="font-weight: 600;">@(review.User?.FirstName) @(review.User?.LastName)</span>
                                 <span style="color: var(--warning); font-weight: 700;">★ @review.Rating.ToString("F1")</span>
                             </div>
                             <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">@review.CreatedAt.ToString("dd.MM.yyyy")</div>
@@ -127,7 +154,7 @@
                             <p style="font-style: italic; color: var(--text-secondary);">@review.Comment</p>
                         </div>
                         <div class="card-footer">
-                            <span style="font-size: 0.8rem; color: var(--text-muted);">👍 @review.Likes likova</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">👍 @review.Likes lajkova</span>
                         </div>
                     </div>
                 </a>

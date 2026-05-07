@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Potvrdi email - Cugger";
+    var link = ViewBag.ConfirmationLink as string;
+    var email = ViewBag.ConfirmationEmail as string;
+}
+
+<div class="auth-wrap">
+    <div class="auth-card reveal">
+        <div style="font-size: 4rem; margin-bottom: 0.5rem;">📬</div>
+        <div class="section-label">Skoro gotovo</div>
+        <h1 class="auth-title">Potvrdi svoj email</h1>
+        <p class="auth-subtitle">
+            @if (!string.IsNullOrEmpty(email))
+            {
+                <text>Poslali smo link za potvrdu na <strong style="color: var(--primary);">@email</strong>.</text>
+            }
+            else
+            {
+                <text>Provjeri svoju e-poštu i klikni na link za potvrdu.</text>
+            }
+        </p>
+
+        @if (!string.IsNullOrEmpty(link))
+        {
+            <div class="alert alert-info" style="margin: 2rem 0;">
+                <strong>Demo mode (lab projekt):</strong>
+                <p style="margin: 0.5rem 0 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+                    Pošto je ovo školski projekt bez pravog SMTP servera, link za potvrdu prikazujemo direktno ovdje.
+                    U produkciji bi link bio poslan emailom.
+                </p>
+                <a href="@link" class="btn btn-primary">
+                    Potvrdi email →
+                </a>
+                <p style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted); word-break: break-all;">
+                    @link
+                </p>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(email))
+        {
+            <form asp-action="ResendConfirmation" method="post" style="margin-top: 1.5rem;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="email" value="@email" />
+                <button type="submit" class="btn btn-secondary" style="width: 100%;">Pošalji novi link</button>
+            </form>
+        }
+
+        <p class="auth-foot">
+            <a href="/login" class="link-arrow">Nazad na prijavu <span>→</span></a>
+        </p>
+    </div>
+</div>

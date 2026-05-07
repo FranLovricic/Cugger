@@ -1,0 +1,85 @@
+@*
+    Animated SVG beer mug — fills with liquid, foam wobbles, bubbles rise.
+    Uses CSS animations from cugger.css (keyframes mug-fill, foam-wobble, foam-pulse, bubble-rise).
+*@
+<div class="beer-mug-wrap">
+    <svg class="beer-mug-svg" viewBox="0 0 360 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+            <!-- Liquid gradient (amber → gold) -->
+            <linearGradient id="liquid-gradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"   stop-color="#FCD34D" />
+                <stop offset="40%"  stop-color="#F59E0B" />
+                <stop offset="100%" stop-color="#B45309" />
+            </linearGradient>
+
+            <!-- Glass highlight -->
+            <linearGradient id="glass-shine" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stop-color="rgba(255,255,255,0.20)" />
+                <stop offset="50%"  stop-color="rgba(255,255,255,0.05)" />
+                <stop offset="100%" stop-color="rgba(255,255,255,0.0)" />
+            </linearGradient>
+
+            <!-- Clip the liquid to the mug interior -->
+            <clipPath id="mug-clip">
+                <rect x="60" y="60" width="180" height="270" rx="14" />
+            </clipPath>
+        </defs>
+
+        <!-- Mug body outline -->
+        <rect x="55" y="55" width="190" height="280" rx="18"
+              fill="rgba(254, 243, 199, 0.06)"
+              stroke="rgba(254, 243, 199, 0.35)" stroke-width="3" />
+
+        <!-- Liquid inside (clipped) -->
+        <g clip-path="url(#mug-clip)">
+            <rect class="mug-liquid" x="60" y="60" width="180" height="270" fill="url(#liquid-gradient)" />
+
+            <!-- Bubbles (rising inside the liquid) -->
+            <circle class="bubble b1" cx="100" cy="290" r="4"  fill="rgba(255,255,255,0.6)" />
+            <circle class="bubble b2" cx="135" cy="300" r="3"  fill="rgba(255,255,255,0.55)" />
+            <circle class="bubble b3" cx="175" cy="285" r="5"  fill="rgba(255,255,255,0.55)" />
+            <circle class="bubble b4" cx="200" cy="295" r="3.5" fill="rgba(255,255,255,0.5)" />
+            <circle class="bubble b5" cx="115" cy="305" r="4.5" fill="rgba(255,255,255,0.55)" />
+            <circle class="bubble b6" cx="155" cy="295" r="3.5" fill="rgba(255,255,255,0.6)" />
+        </g>
+
+        <!-- Glass shine highlight -->
+        <rect x="68" y="70" width="20" height="240" rx="8" fill="url(#glass-shine)" opacity="0.7" />
+
+        <!-- Mug handle -->
+        <path d="M 245 110
+                 Q 320 110, 320 175
+                 Q 320 250, 245 250"
+              fill="none"
+              stroke="rgba(254, 243, 199, 0.35)"
+              stroke-width="14"
+              stroke-linecap="round" />
+
+        <!-- Foam top — wave + blobs -->
+        <g class="mug-foam-wave">
+            <!-- Foam base wave -->
+            <path d="M 55 75
+                     Q 75 50, 100 65
+                     Q 125 40, 150 60
+                     Q 175 35, 200 55
+                     Q 225 40, 245 70
+                     L 245 90
+                     L 55 90 Z"
+                  fill="#FEF3C7" />
+            <!-- Foam blobs (pulsing) -->
+            <circle class="foam-blob b1" cx="80"  cy="50" r="14" fill="#FEF3C7" />
+            <circle class="foam-blob b2" cx="115" cy="38" r="16" fill="#FFFBEB" />
+            <circle class="foam-blob b3" cx="155" cy="42" r="18" fill="#FEF3C7" />
+            <circle class="foam-blob b4" cx="195" cy="34" r="15" fill="#FFFBEB" />
+            <circle class="foam-blob b1" cx="225" cy="50" r="13" fill="#FEF3C7" />
+            <!-- Tiny foam highlights -->
+            <circle cx="92"  cy="55" r="3" fill="rgba(255,255,255,0.85)" />
+            <circle cx="140" cy="48" r="4" fill="rgba(255,255,255,0.9)" />
+            <circle cx="180" cy="44" r="3" fill="rgba(255,255,255,0.85)" />
+            <circle cx="215" cy="55" r="2.5" fill="rgba(255,255,255,0.8)" />
+        </g>
+
+        <!-- Mug base shadow -->
+        <ellipse cx="150" cy="345" rx="100" ry="10" fill="rgba(0, 0, 0, 0.4)" />
+    </svg>
+</div>

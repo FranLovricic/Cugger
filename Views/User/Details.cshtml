@@ -63,7 +63,7 @@
                         <div class="checkin-header">
                             <div class="checkin-user">
                                 <div>
-                                    <div class="checkin-user-name">Beer #@checkIn.BeerId</div>
+                                    <div class="checkin-user-name">@(checkIn.Beer?.Name ?? "Pivo")</div>
                                     <div class="checkin-user-time">@checkIn.CreatedAt.ToString("dd.MM.yyyy")</div>
                                 </div>
                             </div>
@@ -72,10 +72,10 @@
                             <div class="checkin-beer-content">
                                 <div class="checkin-beer-icon">🍻</div>
                                 <div class="checkin-info">
-                                    <div class="checkin-beer-name">Venue #@checkIn.VenueId</div>
+                                    <div class="checkin-beer-name">📍 @(checkIn.Venue?.Name ?? "Lokacija")</div>
                                     @if (!string.IsNullOrEmpty(checkIn.Comment))
                                     {
-                                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">@checkIn.Comment</div>
+                                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; font-style: italic;">"@checkIn.Comment"</div>
                                     }
                                 </div>
                             </div>
@@ -106,7 +106,7 @@
         <div class="grid grid-3 stagger">
             @foreach (var friend in friends)
             {
-                <a href="/User/Details/@friend.Id" style="text-decoration: none; color: inherit;">
+                <a href="/korisnik/@friend.Username" style="text-decoration: none; color: inherit;">
                     <div class="card">
                         <div class="card-body" style="text-align: center; padding: 2rem;">
                             <div class="avatar avatar-lg" style="margin: 0 auto 1rem;">
@@ -140,7 +140,7 @@
             {
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title" style="color: var(--primary); font-size: 0.95rem; margin-bottom: 0.5rem;">Beer #@review.BeerId</h4>
+                        <h4 class="card-title" style="color: var(--primary); font-size: 0.95rem; margin-bottom: 0.5rem;">@(review.Beer?.Name ?? "Pivo")</h4>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
                             <span style="color: var(--warning); font-weight: 700;">★ @review.Rating.ToString("F1")</span>
                             <span style="color: var(--text-muted); font-size: 0.8rem;">@review.CreatedAt.ToString("dd.MM.yyyy")</span>
@@ -150,7 +150,7 @@
                         <p style="font-style: italic; color: var(--text-secondary);">@review.Comment</p>
                     </div>
                     <div class="card-footer">
-                        <span style="font-size: 0.8rem; color: var(--text-muted);">👍 @review.Likes likova</span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">👍 @review.Likes lajkova</span>
                     </div>
                 </div>
             }

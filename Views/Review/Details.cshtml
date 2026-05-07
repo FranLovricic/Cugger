@@ -100,8 +100,28 @@
             <div class="card-body" style="padding: 2rem;">
                 <p style="font-style: italic; line-height: 1.7; font-size: 1.1rem; color: var(--text-secondary);">@Model.Comment</p>
             </div>
-            <div class="card-footer">
-                <span style="font-size: 0.8rem; color: var(--text-muted);">👍 @Model.Likes likova</span>
+            <div class="card-footer" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                <span style="font-size: 0.85rem; color: var(--text-muted);">👍 @Model.Likes lajkova</span>
+
+                <div style="display: flex; gap: 0.5rem;">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <form asp-action="Like" asp-route-id="@Model.Id" method="post" style="display: inline;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                            <button type="submit" class="like-btn">👍 Lajkaj</button>
+                        </form>
+                    }
+
+                    @if (ViewBag.IsOwner == true)
+                    {
+                        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;"
+                              onsubmit="return confirm('Sigurno želiš obrisati ovu recenziju?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-danger">Obriši</button>
+                        </form>
+                    }
+                </div>
             </div>
         </div>
     </section>

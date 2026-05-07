@@ -1,4 +1,15 @@
-﻿<!DOCTYPE html>
+@using System.Security.Claims
+@{
+    var isAuth = User.Identity?.IsAuthenticated == true;
+    var displayName = User.FindFirst(ClaimTypes.GivenName)?.Value ?? User.Identity?.Name;
+    var avatarUrl = User.FindFirst("AvatarUrl")?.Value;
+    var username = User.Identity?.Name;
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var success = TempData["Success"] as string;
+    var error = TempData["Error"] as string;
+}
+<!DOCTYPE html>
 <html lang="hr">
 <head>
     <meta charset="utf-8" />
@@ -18,33 +29,76 @@
             </a>
             <ul class="navbar-menu">
                 <li>
-                    <a href="/" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
-                        Feed
-                    </a>
+                    <a href="/" class="@(currentController == "Home" ? "active" : "")">Početna</a>
                 </li>
                 <li>
-                    <a href="/Beer" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Beer" ? "active" : "")">
-                        Piva
-                    </a>
+                    <a href="/Beer" class="@(currentController == "Beer" ? "active" : "")">Piva</a>
                 </li>
                 <li>
-                    <a href="/Brewery" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Brewery" ? "active" : "")">
-                        Pivovare
-                    </a>
+                    <a href="/Brewery" class="@(currentController == "Brewery" ? "active" : "")">Pivovare</a>
                 </li>
                 <li>
-                    <a href="/CheckIn" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "CheckIn" ? "active" : "")">
-                        Check-ini
-                    </a>
+                    <a href="/feed" class="@(currentController == "CheckIn" ? "active" : "")">Feed</a>
                 </li>
                 <li>
-                    <a href="/User" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")">
-                        Korisnici
-                    </a>
+                    <a href="/Venue" class="@(currentController == "Venue" ? "active" : "")">Lokali</a>
                 </li>
+                <li>
+                    <a href="/User" class="@(currentController == "User" ? "active" : "")">Korisnici</a>
+                </li>
+                <li>
+                    <a href="/pretraga" class="navbar-search-icon" title="Pretraga">🔍</a>
+                </li>
+
+                @if (isAuth)
+                {
+                    <li>
+                        <a href="/CheckIn/Create" class="navbar-register" title="Novi check-in">+ Check-in</a>
+                    </li>
+                    <li class="navbar-divider"></li>
+                    <li class="navbar-user">
+                        <a href="/korisnik/@username" class="navbar-user-link" title="Moj profil">
+                            @if (!string.IsNullOrEmpty(avatarUrl))
+                            {
+                                <img src="@avatarUrl" alt="@displayName" class="navbar-avatar" />
+                            }
+                            <span class="navbar-user-name">@displayName</span>
+                        </a>
+                    </li>
+                    <li>
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="navbar-logout-form">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="navbar-logout-btn" title="Odjava">↪</button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li class="navbar-divider"></li>
+                    <li>
+                        <a href="/login" class="@(currentController == "Account" && currentAction == "Login" ? "active" : "")">Prijava</a>
+                    </li>
+                    <li>
+                        <a href="/register" class="navbar-register @(currentController == "Account" && currentAction == "Register" ? "active" : "")">Registracija →</a>
+                    </li>
+                }
             </ul>
         </div>
     </nav>
+
+    @if (!string.IsNullOrEmpty(success) || !string.IsNullOrEmpty(error))
+    {
+        <div class="toast-wrap">
+            @if (!string.IsNullOrEmpty(success))
+            {
+                <div class="toast toast-success">@success</div>
+            }
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <div class="toast toast-error">@error</div>
+            }
+        </div>
+    }
 
     <!-- MAIN CONTENT -->
     <div class="main-container">
@@ -78,38 +132,58 @@
             <div class="footer-grid">
                 <div>
                     <div class="footer-brand">🍺 Cugger</div>
-                    <p class="footer-desc">Vaša zajednica za otkrivanje, ocjenjivanje i dijeljenje iskustava s pivom.</p>
+                    <p class="footer-desc">Tvoja zajednica za otkrivanje, ocjenjivanje i dijeljenje iskustava s pivom.</p>
                 </div>
                 <div>
                     <div class="footer-heading">Istraži</div>
                     <ul class="footer-links">
                         <li><a href="/Beer">Piva</a></li>
                         <li><a href="/Brewery">Pivovare</a></li>
-                        <li><a href="/Venue">Lokale</a></li>
+                        <li><a href="/Venue">Lokali</a></li>
                     </ul>
                 </div>
                 <div>
                     <div class="footer-heading">Zajednica</div>
                     <ul class="footer-links">
-                        <li><a href="/CheckIn">Check-ini</a></li>
+                        <li><a href="/feed">Feed</a></li>
                         <li><a href="/Review">Recenzije</a></li>
                         <li><a href="/Friendship">Prijateljstva</a></li>
                     </ul>
                 </div>
                 <div>
-                    <div class="footer-heading">Profil</div>
+                    <div class="footer-heading">Račun</div>
                     <ul class="footer-links">
-                        <li><a href="/User">Korisnici</a></li>
+                        @if (isAuth)
+                        {
+                            <li><a href="/korisnik/@username">Moj profil</a></li>
+                            <li>
+                                <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="footer-link-button">Odjava</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li><a href="/login">Prijava</a></li>
+                            <li><a href="/register">Registracija</a></li>
+                        }
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <span>&copy; 2026 Cugger — Svi piva su fiktivni.</span>
-                <span>Napravljeno s 🍺</span>
+                <span>&copy; 2026 Cugger — Sva piva su fiktivna.</span>
+                <span>Napravljen s 🍺 · Konzumirano piva tijekom izrade: <strong style="color: var(--primary);">25</strong></span>
             </div>
         </div>
     </footer>
 
+    @if (isAuth)
+    {
+        <a href="/CheckIn/Create" class="fab-checkin" title="Novi check-in" aria-label="Novi check-in">+</a>
+    }
+
     <script src="~/js/site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

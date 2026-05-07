@@ -1,0 +1,67 @@
+@model Cugger.Models.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Registracija - Cugger";
+}
+
+<div class="auth-wrap">
+    <div class="auth-card reveal">
+        <div class="section-label">Cugger</div>
+        <h1 class="auth-title">Pridruži se zajednici 🍻</h1>
+        <p class="auth-subtitle">Otvori račun i počni pratiti svaki gutljaj.</p>
+
+        <form asp-action="Register" method="post" class="auth-form">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="form-summary"></div>
+
+            <div class="form-row form-row-grid">
+                <div>
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-input" placeholder="Marko" autocomplete="given-name" />
+                    <span asp-validation-for="FirstName" class="form-error"></span>
+                </div>
+                <div>
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-input" placeholder="Horvat" autocomplete="family-name" />
+                    <span asp-validation-for="LastName" class="form-error"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-input" placeholder="hop_king" autocomplete="username" />
+                <span asp-validation-for="Username" class="form-error"></span>
+            </div>
+
+            <div class="form-row">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" type="email" class="form-input" placeholder="ti@example.com" autocomplete="email" />
+                <span asp-validation-for="Email" class="form-error"></span>
+            </div>
+
+            <div class="form-row form-row-grid">
+                <div>
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" type="password" class="form-input" autocomplete="new-password" />
+                    <span asp-validation-for="Password" class="form-error"></span>
+                </div>
+                <div>
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-input" autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmPassword" class="form-error"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary auth-submit">Otvori račun →</button>
+
+            <p class="auth-foot">
+                Već imaš račun? <a href="/login" class="link-arrow">Prijavi se <span>→</span></a>
+            </p>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

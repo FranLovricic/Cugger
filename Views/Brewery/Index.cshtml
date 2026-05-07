@@ -5,9 +5,16 @@
 }
 
 <div class="page-header">
+    <partial name="_Decor/_BrewerySmoke" />
     <div class="section-label">Proizvođači</div>
     <h1 class="page-title">Pivovare</h1>
-    <p class="page-subtitle">Otkrijte pivovare iz cijelog svijeta.</p>
+    <p class="page-subtitle">Otkrij pivovare iz cijelog svijeta.</p>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div style="margin-top: 1.5rem;">
+            <a href="/Brewery/Create" class="btn btn-primary">+ Dodaj pivovaru</a>
+        </div>
+    }
 </div>
 
 @if (Model?.Any() == true)
@@ -15,7 +22,7 @@
     <div class="grid grid-3 stagger">
         @foreach (var brewery in Model)
         {
-            <a href="/Brewery/Details/@brewery.Id" style="text-decoration: none; color: inherit;">
+            <a href="/pivovara/@brewery.Id" style="text-decoration: none; color: inherit;">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">@brewery.Name</h3>

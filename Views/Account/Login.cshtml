@@ -1,0 +1,68 @@
+@model Cugger.Models.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Prijava - Cugger";
+    var unconfirmedEmail = ViewBag.UnconfirmedEmail as string;
+}
+
+<div class="auth-wrap">
+    <div class="auth-card reveal">
+        <div class="section-label">Welcome back</div>
+        <h1 class="auth-title">Prijavi se 🍺</h1>
+        <p class="auth-subtitle">Drago nam je što si opet ovdje.</p>
+
+        <form asp-action="Login" method="post" class="auth-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="ReturnUrl" />
+
+            <div asp-validation-summary="ModelOnly" class="form-summary"></div>
+
+            @if (!string.IsNullOrEmpty(unconfirmedEmail))
+            {
+                <div class="alert alert-info" style="margin-bottom: 1.25rem;">
+                    <strong>Nepotvrđen email.</strong>
+                    <p style="margin: 0.5rem 0 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+                        Možemo ti poslati novi link za potvrdu.
+                    </p>
+                    <form asp-action="ResendConfirmation" method="post" style="margin: 0;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="email" value="@unconfirmedEmail" />
+                        <button type="submit" class="btn btn-secondary" style="width: 100%; padding: 0.6rem;">
+                            Pošalji novi link
+                        </button>
+                    </form>
+                </div>
+            }
+
+            <div class="form-row">
+                <label asp-for="UsernameOrEmail" class="form-label"></label>
+                <input asp-for="UsernameOrEmail" class="form-input" placeholder="hop_king ili ti@example.com" autocomplete="username" />
+                <span asp-validation-for="UsernameOrEmail" class="form-error"></span>
+            </div>
+
+            <div class="form-row">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" type="password" class="form-input" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="form-error"></span>
+            </div>
+
+            <div class="form-row form-checkbox-row">
+                <label class="checkbox-label">
+                    <input asp-for="RememberMe" type="checkbox" />
+                    <span>@Html.DisplayNameFor(m => m.RememberMe)</span>
+                </label>
+                <a href="/forgot-password" class="forgot-link">Zaboravljena lozinka?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary auth-submit">Prijavi se →</button>
+
+            <p class="auth-foot">
+                Nemaš račun? <a href="/register" class="link-arrow">Registriraj se <span>→</span></a>
+            </p>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

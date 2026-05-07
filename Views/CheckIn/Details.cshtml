@@ -47,7 +47,15 @@
             </div>
         </div>
         <div class="header-actions">
-            <a href="/CheckIn" class="btn btn-secondary">← Nazad</a>
+            <a href="/feed" class="btn btn-secondary">← Nazad</a>
+            @if (ViewBag.IsOwner == true)
+            {
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;"
+                      onsubmit="return confirm('Sigurno želiš obrisati ovaj check-in?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-danger">Obriši</button>
+                </form>
+            }
         </div>
     </div>
 </div>

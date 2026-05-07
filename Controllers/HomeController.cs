@@ -1,35 +1,43 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Cugger.Models;
-using Cugger.Services;
+using Cugger.Repositories;
 
 namespace Cugger.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly CuggerDataService _dataService;
+    private readonly BeerRepository _beerRepo;
+    private readonly UserRepository _userRepo;
+    private readonly CheckInRepository _checkInRepo;
+    private readonly BreweryRepository _breweryRepo;
 
-    public HomeController(CuggerDataService dataService)
+    public HomeController(
+        BeerRepository beerRepo,
+        UserRepository userRepo,
+        CheckInRepository checkInRepo,
+        BreweryRepository breweryRepo)
     {
-        _dataService = dataService;
+        _beerRepo = beerRepo;
+        _userRepo = userRepo;
+        _checkInRepo = checkInRepo;
+        _breweryRepo = breweryRepo;
     }
 
     public IActionResult Index()
     {
-        ViewBag.RecentCheckIns = _dataService.GetTopRecentCheckIns(6);
-        ViewBag.TopRatedBeers = _dataService.GetTopRatedBeers(5);
-        ViewBag.MostActiveUsers = _dataService.GetMostActiveUsers(5);
-        ViewBag.TotalUsers = _dataService.GetAllUsers().Count;
-        ViewBag.TotalBeers = _dataService.GetAllBeers().Count;
-        ViewBag.TotalCheckIns = _dataService.GetAllCheckIns().Count;
+        ViewBag.RecentCheckIns = _checkInRepo.GetRecent(6);
+        ViewBag.TopRatedBeers = _beerRepo.GetTopRated(8);
+        ViewBag.MostActiveUsers = _userRepo.GetMostActive(5);
+        ViewBag.TotalUsers = _userRepo.GetAll().Count;
+        ViewBag.TotalBeers = _beerRepo.GetAll().Count;
+        ViewBag.TotalCheckIns = _checkInRepo.GetAll().Count;
+        ViewBag.TotalBreweries = _breweryRepo.GetAll().Count;
 
         return View();
     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+    public IActionResult Privacy() => View();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

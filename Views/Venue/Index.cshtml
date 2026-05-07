@@ -1,13 +1,20 @@
 @model List<Venue>
 
 @{
-    ViewData["Title"] = "Lokale - Cugger";
+    ViewData["Title"] = "Lokali - Cugger";
 }
 
 <div class="page-header">
+    <partial name="_Decor/_VenuePin" />
     <div class="section-label">Mjesta</div>
-    <h1 class="page-title">Lokale</h1>
-    <p class="page-subtitle">Otkrijte gdje se obavljaju check-ini.</p>
+    <h1 class="page-title">Lokali</h1>
+    <p class="page-subtitle">Otkrij gdje se obavljaju check-ini.</p>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div style="margin-top: 1.5rem;">
+            <a href="/Venue/Create" class="btn btn-primary">+ Dodaj lokal</a>
+        </div>
+    }
 </div>
 
 @if (Model?.Any() == true)

@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Cugger — Discover Beer Culture";
     var recentCheckIns = ViewBag.RecentCheckIns as List<CheckIn>;
     var topBeers = ViewBag.TopRatedBeers as List<Beer>;
@@ -7,18 +7,70 @@
 
 <!-- HERO -->
 <section class="hero">
-    <div class="hero-eyebrow">Beer Tracking Platform</div>
-    <h1 class="hero-title">
-        Discover.<br />
-        Rate.<br />
-        <span class="accent">Share.</span>
-    </h1>
-    <p class="hero-description">
-        Pratite svako pivo, podijelite iskustva i povežite se sa zajednicom koja voli istu stvar — dobro pivo.
-    </p>
-    <div class="hero-cta">
-        <a href="/Beer" class="btn btn-primary">Istraži piva →</a>
-        <a href="/CheckIn" class="btn btn-secondary">Pregledaj check-ine</a>
+    <!-- Floating hops decoration -->
+    <svg class="hero-hop h1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g fill="#65A30D">
+            <ellipse cx="50" cy="20" rx="14" ry="8" />
+            <ellipse cx="38" cy="35" rx="14" ry="8" />
+            <ellipse cx="62" cy="35" rx="14" ry="8" />
+            <ellipse cx="30" cy="52" rx="14" ry="8" />
+            <ellipse cx="50" cy="52" rx="14" ry="8" />
+            <ellipse cx="70" cy="52" rx="14" ry="8" />
+            <ellipse cx="38" cy="68" rx="14" ry="8" />
+            <ellipse cx="62" cy="68" rx="14" ry="8" />
+            <ellipse cx="50" cy="84" rx="12" ry="8" />
+        </g>
+    </svg>
+    <svg class="hero-hop h2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g fill="#84CC16">
+            <ellipse cx="50" cy="20" rx="14" ry="8" />
+            <ellipse cx="38" cy="35" rx="14" ry="8" />
+            <ellipse cx="62" cy="35" rx="14" ry="8" />
+            <ellipse cx="30" cy="52" rx="14" ry="8" />
+            <ellipse cx="50" cy="52" rx="14" ry="8" />
+            <ellipse cx="70" cy="52" rx="14" ry="8" />
+            <ellipse cx="50" cy="68" rx="14" ry="8" />
+        </g>
+    </svg>
+    <svg class="hero-hop h3" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g fill="#A3E635">
+            <ellipse cx="50" cy="25" rx="14" ry="8" />
+            <ellipse cx="38" cy="42" rx="14" ry="8" />
+            <ellipse cx="62" cy="42" rx="14" ry="8" />
+            <ellipse cx="50" cy="60" rx="14" ry="8" />
+            <ellipse cx="50" cy="76" rx="12" ry="8" />
+        </g>
+    </svg>
+
+    <div class="hero-content">
+        <div class="hero-eyebrow">Beer Tracking Platform</div>
+        <h1 class="hero-title">
+            Discover.<br />
+            Rate.<br />
+            <span class="accent">Share.</span>
+        </h1>
+        <p class="hero-description">
+            Prati svako pivo, podijeli iskustva i poveži se sa zajednicom koja voli istu stvar — dobro pivo.
+        </p>
+        <div class="hero-cta">
+            <a href="/Beer" class="btn btn-primary">Istraži piva →</a>
+            <a href="/feed" class="btn btn-secondary">Pregledaj feed</a>
+        </div>
+
+        <!-- Quick search -->
+        <form action="/pretraga" method="get" class="search-bar hero-search">
+            <input
+                type="search"
+                name="q"
+                class="search-input"
+                placeholder="🔍 Traži pivo, stil ili pivovaru..."
+                autocomplete="off" />
+            <button type="submit" class="btn btn-primary">Idi</button>
+        </form>
+    </div>
+
+    <div class="hero-visual">
+        <partial name="_BeerMug" />
     </div>
 </section>
 
@@ -41,7 +93,6 @@
         <span class="marquee-divider">●</span>
         <span class="marquee-item">Sour</span>
         <span class="marquee-divider">●</span>
-        <!-- duplicate for seamless loop -->
         <span class="marquee-item">IPA</span>
         <span class="marquee-divider">●</span>
         <span class="marquee-item">Stout</span>
@@ -72,6 +123,10 @@
         <div class="stat-label">Piva u bazi</div>
     </div>
     <div class="stat-card">
+        <div class="stat-number" data-counter="@ViewBag.TotalBreweries" data-suffix="+">0</div>
+        <div class="stat-label">Pivovara</div>
+    </div>
+    <div class="stat-card">
         <div class="stat-number" data-counter="@ViewBag.TotalCheckIns" data-suffix="+">0</div>
         <div class="stat-label">Check-inova</div>
     </div>
@@ -100,18 +155,25 @@
         <div class="grid grid-4 stagger">
             @foreach (var beer in topBeers)
             {
-                <a href="/Beer/Details/@beer.Id" style="text-decoration: none; color: inherit;">
-                    <div class="card">
+                <a href="/pivo/@beer.Id" style="text-decoration: none; color: inherit;">
+                    <div class="card beer-card" data-style="@beer.Style">
                         <div class="card-body" style="text-align: center; padding: 2rem 1.5rem;">
-                            <div style="font-size: 3rem; margin-bottom: 1rem; filter: grayscale(0.2);">🍺</div>
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🍺</div>
                             <h3 class="card-title" style="font-size: 1.05rem; margin-bottom: 0.75rem;">@beer.Name</h3>
                             <div class="tag tag-style" style="margin-bottom: 1.25rem;">@beer.Style</div>
                             <div style="margin-bottom: 0.75rem; font-weight: 700; color: var(--warning); font-size: 1.1rem;">
-                                ★ 4.5
+                                ★ @beer.AverageRating.ToString("F1")
+                                <span style="color: var(--text-muted); font-weight: 400; font-size: 0.8rem;">(@beer.RatingCount)</span>
                             </div>
                             <div style="font-size: 0.8rem; color: var(--text-muted);">
                                 @beer.ABV% ABV · @beer.IBU IBU
                             </div>
+                            @if (beer.Brewery != null)
+                            {
+                                <div style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-muted);">
+                                    @beer.Brewery.Name
+                                </div>
+                            }
                         </div>
                     </div>
                 </a>
@@ -128,7 +190,7 @@
         <div class="section-label">Zajednica</div>
         <h3>Otkrij što pije tvoja ekipa</h3>
         <p>Feed u stvarnom vremenu. Pogledaj što tvoji prijatelji piju, gdje, i koliko im se sviđa.</p>
-        <a href="/CheckIn" class="link-arrow">Pogledaj feed <span>→</span></a>
+        <a href="/feed" class="link-arrow">Pogledaj feed <span>→</span></a>
     </div>
     <div class="feature-visual">🍻</div>
 </div>
@@ -163,10 +225,10 @@
                         <div class="checkin-header">
                             <div class="checkin-user">
                                 <div class="avatar avatar-sm">
-                                    <img src="https://ui-avatars.com/api/?name=User@(checkIn.UserId)&background=F59E0B&color=111" alt="User" />
+                                    <img src="@(checkIn.User?.AvatarUrl ?? "https://ui-avatars.com/api/?name=User")" alt="@checkIn.User?.Username" />
                                 </div>
                                 <div>
-                                    <div class="checkin-user-name">Korisnik #@checkIn.UserId</div>
+                                    <div class="checkin-user-name">@(checkIn.User?.FirstName) @(checkIn.User?.LastName)</div>
                                     <div class="checkin-user-time">@checkIn.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
                                 </div>
                             </div>
@@ -176,9 +238,9 @@
                             <div class="checkin-beer-content">
                                 <div class="checkin-beer-icon">🍻</div>
                                 <div class="checkin-info">
-                                    <div class="checkin-beer-name">Beer #@checkIn.BeerId</div>
+                                    <div class="checkin-beer-name">@(checkIn.Beer?.Name ?? "Pivo")</div>
                                     <div class="checkin-beer-meta">
-                                        <span>📍 Venue #@checkIn.VenueId</span>
+                                        <span>📍 @(checkIn.Venue?.Name ?? "Lokacija")</span>
                                     </div>
                                     @if (!string.IsNullOrEmpty(checkIn.Comment))
                                     {
@@ -216,7 +278,7 @@
         <div class="grid grid-3 stagger">
             @foreach (var user in activeUsers)
             {
-                <a href="/User/Details/@user.Id" style="text-decoration: none; color: inherit;">
+                <a href="/korisnik/@user.Username" style="text-decoration: none; color: inherit;">
                     <div class="card">
                         <div class="card-body" style="text-align: center; padding: 2.5rem 1.5rem;">
                             <div class="avatar avatar-lg" style="margin: 0 auto 1.25rem;">

@@ -5,9 +5,10 @@
 }
 
 <div class="page-header">
+    <partial name="_Decor/_FriendshipConnect" />
     <div class="section-label">Društvena mreža</div>
     <h1 class="page-title">Prijateljstva</h1>
-    <p class="page-subtitle">Istražite veze unutar zajednice.</p>
+    <p class="page-subtitle">Istraži veze unutar zajednice.</p>
 </div>
 
 @if (Model?.Any() == true)
@@ -20,16 +21,16 @@
                     <div class="card-body" style="text-align: center; padding: 2rem;">
                         <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
                             <div class="avatar avatar-md">
-                                <img src="https://ui-avatars.com/api/?name=U@(friendship.FromUserId)&background=F59E0B&color=111" alt="User" />
+                                <img src="@(friendship.FromUser?.AvatarUrl ?? "https://ui-avatars.com/api/?name=U")" alt="@friendship.FromUser?.Username" />
                             </div>
                             <div style="font-size: 1.25rem; color: var(--primary);">↔</div>
                             <div class="avatar avatar-md">
-                                <img src="https://ui-avatars.com/api/?name=U@(friendship.ToUserId)&background=D97706&color=111" alt="User" />
+                                <img src="@(friendship.ToUser?.AvatarUrl ?? "https://ui-avatars.com/api/?name=U")" alt="@friendship.ToUser?.Username" />
                             </div>
                         </div>
-                        <p style="font-size: 0.85rem; color: var(--text);">Korisnik #@friendship.FromUserId</p>
+                        <p style="font-size: 0.9rem; color: var(--text); font-weight: 600;">@(friendship.FromUser?.FirstName) @(friendship.FromUser?.LastName)</p>
                         <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0.25rem 0;">↔</p>
-                        <p style="font-size: 0.85rem; color: var(--text);">Korisnik #@friendship.ToUserId</p>
+                        <p style="font-size: 0.9rem; color: var(--text); font-weight: 600;">@(friendship.ToUser?.FirstName) @(friendship.ToUser?.LastName)</p>
                         <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">@friendship.CreatedAt.ToString("dd.MM.yyyy")</p>
                     </div>
                 </div>

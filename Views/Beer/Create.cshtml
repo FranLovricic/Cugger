@@ -1,0 +1,76 @@
+@model Cugger.Models.ViewModels.CreateBeerViewModel
+
+@{
+    ViewData["Title"] = "Dodaj pivo - Cugger";
+    var breweries = ViewBag.Breweries as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>;
+}
+
+<div class="auth-wrap" style="align-items: flex-start;">
+    <div class="auth-card reveal" style="max-width: 640px;">
+        <div class="section-label">Dodaj u katalog</div>
+        <h1 class="auth-title">Novo pivo 🍺</h1>
+        <p class="auth-subtitle">Nedostaje nešto u bazi? Dodaj ga.</p>
+
+        <form asp-action="Create" method="post" class="auth-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="form-summary"></div>
+
+            <div class="form-row">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-input" placeholder="npr. Karlovačko Radler" />
+                <span asp-validation-for="Name" class="form-error"></span>
+            </div>
+
+            <div class="form-row">
+                <label asp-for="BreweryId" class="form-label"></label>
+                <select asp-for="BreweryId" asp-items="breweries" class="form-input">
+                    <option value="">— odaberi pivovaru —</option>
+                </select>
+                <span asp-validation-for="BreweryId" class="form-error"></span>
+                <small style="display:block; margin-top: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">
+                    Nema pivovare? <a href="/Brewery/Create" class="forgot-link">Dodaj novu →</a>
+                </small>
+            </div>
+
+            <div class="form-row">
+                <label asp-for="Style" class="form-label"></label>
+                <select asp-for="Style" class="form-input" asp-items="Html.GetEnumSelectList<Cugger.Models.BeerStyle>()"></select>
+                <span asp-validation-for="Style" class="form-error"></span>
+            </div>
+
+            <div class="form-row form-row-grid">
+                <div>
+                    <label asp-for="ABV" class="form-label"></label>
+                    <input asp-for="ABV" type="number" step="0.1" min="0" max="25" class="form-input" placeholder="5.0" />
+                    <span asp-validation-for="ABV" class="form-error"></span>
+                </div>
+                <div>
+                    <label asp-for="IBU" class="form-label"></label>
+                    <input asp-for="IBU" type="number" min="0" max="200" class="form-input" placeholder="20" />
+                    <span asp-validation-for="IBU" class="form-error"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-input" rows="4" placeholder="Kako miriše? Kakvog je okusa?"></textarea>
+                <span asp-validation-for="Description" class="form-error"></span>
+            </div>
+
+            <div class="form-row">
+                <label asp-for="ImageUrl" class="form-label"></label>
+                <input asp-for="ImageUrl" type="url" class="form-input" placeholder="https://..." />
+                <span asp-validation-for="ImageUrl" class="form-error"></span>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+                <a href="/Beer" class="btn btn-secondary" style="flex: 1;">Odustani</a>
+                <button type="submit" class="btn btn-primary" style="flex: 2;">Spremi pivo →</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

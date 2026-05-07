@@ -1,22 +1,23 @@
 using Cugger.Models;
-using Cugger.Services;
+using Cugger.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cugger.Controllers
 {
     public class FriendshipController : Controller
     {
-        private readonly CuggerDataService _dataService;
+        private readonly FriendshipRepository _friendshipRepo;
 
-        public FriendshipController(CuggerDataService dataService)
+        public FriendshipController(FriendshipRepository friendshipRepo)
         {
-            _dataService = dataService;
+            _friendshipRepo = friendshipRepo;
         }
 
         public IActionResult Index()
         {
-            var friendships = _dataService.GetAllFriendships();
-            ViewBag.Breadcrumbs = new[] {
+            var friendships = _friendshipRepo.GetAll();
+            ViewBag.Breadcrumbs = new[]
+            {
                 new BreadcrumbItem("Dashboard", "/", false),
                 new BreadcrumbItem("Prijateljstva", "/Friendship", true)
             };
@@ -25,13 +26,13 @@ namespace Cugger.Controllers
 
         public IActionResult Details(int id)
         {
-            var friendship = _dataService.GetFriendshipById(id);
-            if (friendship == null)
-                return NotFound();
+            var friendship = _friendshipRepo.GetById(id);
+            if (friendship == null) return NotFound();
 
-            ViewBag.FromUser = _dataService.GetUserById(friendship.FromUserId);
-            ViewBag.ToUser = _dataService.GetUserById(friendship.ToUserId);
-            ViewBag.Breadcrumbs = new[] {
+            ViewBag.FromUser = friendship.FromUser;
+            ViewBag.ToUser = friendship.ToUser;
+            ViewBag.Breadcrumbs = new[]
+            {
                 new BreadcrumbItem("Dashboard", "/", false),
                 new BreadcrumbItem("Prijateljstva", "/Friendship", false),
                 new BreadcrumbItem($"Prijateljstvo #{id}", $"/Friendship/Details/{id}", true)

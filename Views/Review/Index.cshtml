@@ -5,9 +5,21 @@
 }
 
 <div class="page-header">
+    <partial name="_Decor/_FloatingStars" />
     <div class="section-label">Mišljenja</div>
     <h1 class="page-title">Recenzije</h1>
-    <p class="page-subtitle">Čitajte recenzije piva od zajednice.</p>
+    <p class="page-subtitle">Čitaj recenzije piva od zajednice.</p>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div style="margin-top: 1.5rem;">
+            <a href="/Review/Create" class="btn btn-primary">+ Nova recenzija 📝</a>
+        </div>
+    }
+</div>
+
+<div style="display: flex; gap: 0.75rem; margin-bottom: 2rem; flex-wrap: wrap;">
+    <a href="/Review" class="filter-chip @(Context.Request.Path == "/Review" ? "active" : "")">Sve recenzije</a>
+    <a href="/Review/Top" class="filter-chip @(Context.Request.Path == "/Review/Top" ? "active" : "")">🔥 Top liked</a>
 </div>
 
 @if (Model?.Any() == true)
@@ -19,18 +31,18 @@
                 <div class="card">
                     <div class="card-header">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                            <span style="font-weight: 600;">Korisnik #@review.UserId</span>
+                            <span style="font-weight: 600;">@(review.User?.FirstName) @(review.User?.LastName)</span>
                             <span style="color: var(--warning); font-weight: 700;">★ @review.Rating.ToString("F1")</span>
                         </div>
                         <div style="font-size: 0.8rem; color: var(--text-muted);">
-                            Beer #@review.BeerId · @review.CreatedAt.ToString("dd.MM.yyyy")
+                            🍺 @(review.Beer?.Name ?? "Pivo") · @review.CreatedAt.ToString("dd.MM.yyyy")
                         </div>
                     </div>
                     <div class="card-body">
                         <p style="font-style: italic; color: var(--text-secondary);">@review.Comment</p>
                     </div>
                     <div class="card-footer">
-                        <span style="font-size: 0.8rem; color: var(--text-muted);">👍 @review.Likes likova</span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">👍 @review.Likes lajkova</span>
                     </div>
                 </div>
             </a>

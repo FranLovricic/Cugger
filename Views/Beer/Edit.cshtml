@@ -1,23 +1,24 @@
 @model Cugger.Models.ViewModels.CreateBeerViewModel
 
 @{
-    ViewData["Title"] = "Dodaj pivo - Cugger";
+    ViewData["Title"] = $"Uredi: {Model.Name} - Cugger";
     var breweries = ViewBag.Breweries as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>;
+    var beerId = (int)ViewBag.BeerId;
 }
 
 <div class="auth-wrap" style="align-items: flex-start;">
     <div class="auth-card reveal" style="max-width: 640px;">
-        <div class="section-label">Dodaj u katalog</div>
-        <h1 class="auth-title">Novo pivo 🍺</h1>
-        <p class="auth-subtitle">Nedostaje nešto u bazi? Dodaj ga.</p>
+        <div class="section-label">Uređivanje</div>
+        <h1 class="auth-title">Uredi pivo 🍺</h1>
+        <p class="auth-subtitle">Ispravi detalje ako su pogrešni.</p>
 
-        <form asp-action="Create" method="post" class="auth-form">
+        <form asp-action="Edit" asp-route-id="@beerId" method="post" class="auth-form">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="form-summary"></div>
 
             <div class="form-row">
                 <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-input" placeholder="npr. Karlovačko Radler" />
+                <input asp-for="Name" class="form-input" />
                 <span asp-validation-for="Name" class="form-error"></span>
             </div>
 
@@ -26,11 +27,10 @@
                 <partial name="_Controls/_AutocompleteSelect" model='new Cugger.Models.ViewModels.AutocompleteSelectViewModel {
                     FieldName = "BreweryId",
                     Endpoint = "/api/lookup/breweries",
-                    Placeholder = "Traži pivovaru po imenu, gradu, državi..." }' />
+                    Placeholder = "Traži pivovaru...",
+                    InitialValueId = Model.BreweryId,
+                    InitialLabel = breweries?.FirstOrDefault(x => x.Value == Model.BreweryId.ToString())?.Text }' />
                 <span asp-validation-for="BreweryId" class="form-error"></span>
-                <small style="display:block; margin-top: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">
-                    Nema pivovare? <a href="/Brewery/Create" class="forgot-link">Dodaj novu →</a>
-                </small>
             </div>
 
             <div class="form-row">
@@ -42,31 +42,31 @@
             <div class="form-row form-row-grid">
                 <div>
                     <label asp-for="ABV" class="form-label"></label>
-                    <input asp-for="ABV" type="number" step="0.1" min="0" max="25" class="form-input" placeholder="5.0" />
+                    <input asp-for="ABV" type="number" step="0.1" min="0" max="25" class="form-input" />
                     <span asp-validation-for="ABV" class="form-error"></span>
                 </div>
                 <div>
                     <label asp-for="IBU" class="form-label"></label>
-                    <input asp-for="IBU" type="number" min="0" max="200" class="form-input" placeholder="20" />
+                    <input asp-for="IBU" type="number" min="0" max="200" class="form-input" />
                     <span asp-validation-for="IBU" class="form-error"></span>
                 </div>
             </div>
 
             <div class="form-row">
                 <label asp-for="Description" class="form-label"></label>
-                <textarea asp-for="Description" class="form-input" rows="4" placeholder="Kako miriše? Kakvog je okusa?"></textarea>
+                <textarea asp-for="Description" class="form-input" rows="4"></textarea>
                 <span asp-validation-for="Description" class="form-error"></span>
             </div>
 
             <div class="form-row">
                 <label asp-for="ImageUrl" class="form-label"></label>
-                <input asp-for="ImageUrl" type="url" class="form-input" placeholder="https://..." />
+                <input asp-for="ImageUrl" type="url" class="form-input" />
                 <span asp-validation-for="ImageUrl" class="form-error"></span>
             </div>
 
             <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
-                <a href="/Beer" class="btn btn-secondary" style="flex: 1;">Odustani</a>
-                <button type="submit" class="btn btn-primary" style="flex: 2;">Spremi pivo →</button>
+                <a href="/pivo/@beerId" class="btn btn-secondary" style="flex: 1;">Odustani</a>
+                <button type="submit" class="btn btn-primary" style="flex: 2;">Spremi izmjene →</button>
             </div>
         </form>
     </div>

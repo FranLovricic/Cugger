@@ -121,6 +121,97 @@ namespace Cugger.Controllers
             return RedirectToAction(nameof(Details), new { id = beer.Id });
         }
 
+        // ====== Edit ======
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Edit(int id)
+        {
+            var beer = _beerRepo.GetById(id);
+            if (beer == null) return NotFound();
+
+            var model = new CreateBeerViewModel
+            {
+                Name = beer.Name,
+                BreweryId = beer.BreweryId,
+                Style = beer.Style,
+                ABV = beer.ABV,
+                IBU = beer.IBU,
+                Description = beer.Description,
+                ImageUrl = beer.ImageUrl
+            };
+
+            ViewBag.BeerId = id;
+            ViewBag.Breweries = BuildBrewerySelect(beer.BreweryId);
+            ViewBag.Breadcrumbs = new[]
+            {
+                new BreadcrumbItem("Početna", "/", false),
+                new BreadcrumbItem("Piva", "/Beer", false),
+                new BreadcrumbItem(beer.Name, $"/pivo/{id}", false),
+                new BreadcrumbItem("Uredi", $"/Beer/Edit/{id}", true)
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CreateBeerViewModel model)
+        {
+            var beer = await _db.Beers.FindAsync(id);
+            if (beer == null) return NotFound();
+
+            if (!await _db.Breweries.AnyAsync(b => b.Id == model.BreweryId))
+                ModelState.AddModelError(nameof(model.BreweryId), "Odaberi postojeću pivovaru.");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.BeerId = id;
+                ViewBag.Breweries = BuildBrewerySelect(model.BreweryId);
+                return View(model);
+            }
+
+            beer.Name = model.Name.Trim();
+            beer.BreweryId = model.BreweryId;
+            beer.Style = model.Style;
+            beer.ABV = model.ABV;
+            beer.IBU = model.IBU;
+            beer.Description = (model.Description ?? string.Empty).Trim();
+            beer.ImageUrl = (model.ImageUrl ?? string.Empty).Trim();
+
+            await _db.SaveChangesAsync();
+
+            TempData["Success"] = $"Spremljene izmjene za '{beer.Name}'. 🍺";
+            return RedirectToAction(nameof(Details), new { id = beer.Id });
+        }
+
+        // ====== Delete ======
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var beer = await _db.Beers
+                .Include(b => b.CheckIns)
+                .Include(b => b.Reviews)
+                .FirstOrDefaultAsync(b => b.Id == id);
+            if (beer == null) return NotFound();
+
+            if (beer.CheckIns.Any() || beer.Reviews.Any())
+            {
+                TempData["Error"] = $"Pivo '{beer.Name}' ne možeš obrisati — već postoje check-ini ili recenzije.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            _db.Beers.Remove(beer);
+            await _db.SaveChangesAsync();
+
+            TempData["Success"] = $"Obrisano pivo '{beer.Name}'.";
+            return RedirectToAction(nameof(Index));
+        }
+
         // ====== Custom routing ======
 
         [Route("pretraga")]

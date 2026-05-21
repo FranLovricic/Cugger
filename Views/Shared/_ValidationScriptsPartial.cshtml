@@ -1,3 +1,31 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    // Force client-side validation to fire on blur (not just on submit)
+    // jquery.validate already does focusout by default, but unobtrusive often
+    // disables it. We re-enable + add onkeyup for live feedback.
+    (function () {
+        if (typeof $ === 'undefined' || !$.validator) return;
+
+        $.validator.setDefaults({
+            onfocusout: function (element) { this.element(element); },
+            onkeyup: function (element) {
+                // Validate on keyup but only after first error shows for that field
+                if ($(element).hasClass('input-validation-error')) {
+                    this.element(element);
+                }
+            },
+            errorClass: 'input-validation-error',
+            validClass: 'input-validation-valid',
+            errorElement: 'span'
+        });
+
+        // Re-parse already-rendered forms (Razor renders data-val attributes).
+        $(function () {
+            $('form').each(function () {
+                $.validator.unobtrusive.parse(this);
+            });
+        });
+    })();
+</script>

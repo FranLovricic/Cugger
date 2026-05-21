@@ -19,74 +19,49 @@
     }
 </div>
 
-<!-- Search bar -->
-<form action="/pretraga" method="get" class="search-bar reveal" style="margin-bottom: 2rem;">
+<!-- AJAX search + style filter -->
+<form data-ajax-search="/api/search/beers" data-target="#beer-results" class="search-bar reveal" style="margin-bottom: 1.5rem;">
     <input
         type="search"
         name="q"
         class="search-input"
         placeholder="🔍 Traži pivo po imenu ili opisu..."
         autocomplete="off" />
-    <button type="submit" class="btn btn-primary">Traži</button>
 </form>
 
-<!-- Style filter chips -->
 <div class="style-filter reveal" style="margin-bottom: 2.5rem;">
-    <a href="/Beer" class="filter-chip @(string.IsNullOrEmpty(selectedStyle) ? "active" : "")">Svi</a>
+    <button type="button" class="filter-chip active" data-style-filter="">Svi</button>
     @foreach (var style in styles)
     {
-        var isActive = string.Equals(selectedStyle, style.ToString(), StringComparison.OrdinalIgnoreCase);
-        <a href="/Beer/Style/@style" class="filter-chip @(isActive ? "active" : "")">@style</a>
+        <button type="button" class="filter-chip" data-style-filter="@style">@style</button>
     }
 </div>
 
-@if (Model?.Any() == true)
-{
-    <div class="grid grid-4 stagger">
-        @foreach (var beer in Model)
-        {
-            <a href="/pivo/@beer.Id" style="text-decoration: none; color: inherit;">
-                <div class="card beer-card" data-style="@beer.Style">
-                    <div class="card-body" style="text-align: center; padding: 2rem 1.5rem;">
-                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🍺</div>
-                        <h3 class="card-title" style="font-size: 1.05rem; margin-bottom: 0.75rem;">@beer.Name</h3>
-                        <div class="tag tag-style" style="margin-bottom: 1rem;">@beer.Style</div>
+<div id="beer-results">
+    <partial name="_BeerGrid" model="Model" />
+</div>
 
-                        @if (beer.RatingCount > 0)
-                        {
-                            <div style="margin-bottom: 0.75rem; color: var(--warning); font-weight: 700;">
-                                ★ @beer.AverageRating.ToString("F1")
-                                <span style="color: var(--text-muted); font-weight: 400; font-size: 0.8rem;">
-                                    (@beer.RatingCount)
-                                </span>
-                            </div>
-                        }
-                        else
-                        {
-                            <div style="margin-bottom: 0.75rem; color: var(--text-muted); font-size: 0.85rem;">
-                                Nije ocijenjeno
-                            </div>
-                        }
-
-                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">
-                            @beer.ABV% ABV · @beer.IBU IBU
-                        </div>
-                        @if (beer.Brewery != null)
-                        {
-                            <div style="padding-top: 1rem; border-top: 1px solid var(--border); margin-top: 1rem;">
-                                <span class="link-arrow" style="font-size: 0.8rem;">@beer.Brewery.Name <span>→</span></span>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </a>
-        }
-    </div>
-}
-else
-{
-    <div class="section-empty">
-        <div class="section-empty-icon">🍺</div>
-        <p>Nema piva za odabrani filter.</p>
-    </div>
+@section Scripts {
+    <script>
+        // Wire style filter chips to the AJAX search form
+        (function () {
+            const form = document.querySelector('form[data-ajax-search="/api/search/beers"]');
+            if (!form) return;
+            let hidden = form.querySelector('input[name="style"]');
+            if (!hidden) {
+                hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'style';
+                form.appendChild(hidden);
+            }
+            document.querySelectorAll('[data-style-filter]').forEach(chip => {
+                chip.addEventListener('click', function () {
+                    document.querySelectorAll('[data-style-filter]').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    hidden.value = this.dataset.styleFilter;
+                    hidden.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+            });
+        })();
+    </script>
 }

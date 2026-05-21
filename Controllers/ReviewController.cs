@@ -110,6 +110,71 @@ namespace Cugger.Controllers
             return RedirectToAction(nameof(Details), new { id = review.Id });
         }
 
+        // ====== Edit ======
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Edit(int id)
+        {
+            var review = _reviewRepo.GetById(id);
+            if (review == null) return NotFound();
+
+            var userId = GetCurrentUserId();
+            if (userId == null || review.UserId != userId.Value)
+                return Forbid();
+
+            var model = new CreateReviewViewModel
+            {
+                BeerId = review.BeerId,
+                Rating = review.Rating,
+                Comment = review.Comment
+            };
+
+            ViewBag.ReviewId = id;
+            ViewBag.Beers = BuildBeerSelect(review.BeerId);
+            ViewBag.Breadcrumbs = new[]
+            {
+                new BreadcrumbItem("Početna", "/", false),
+                new BreadcrumbItem("Recenzije", "/Review", false),
+                new BreadcrumbItem($"Recenzija #{id}", $"/Review/Details/{id}", false),
+                new BreadcrumbItem("Uredi", $"/Review/Edit/{id}", true)
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CreateReviewViewModel model)
+        {
+            var review = await _db.Reviews.FindAsync(id);
+            if (review == null) return NotFound();
+
+            var userId = GetCurrentUserId();
+            if (userId == null || review.UserId != userId.Value)
+                return Forbid();
+
+            if (!await _db.Beers.AnyAsync(b => b.Id == model.BeerId))
+                ModelState.AddModelError(nameof(model.BeerId), "Odaberi postojeće pivo.");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ReviewId = id;
+                ViewBag.Beers = BuildBeerSelect(model.BeerId);
+                return View(model);
+            }
+
+            review.BeerId = model.BeerId;
+            review.Rating = model.Rating;
+            review.Comment = model.Comment.Trim();
+
+            await _db.SaveChangesAsync();
+
+            TempData["Success"] = "Recenzija izmijenjena. 📝";
+            return RedirectToAction(nameof(Details), new { id = review.Id });
+        }
+
         // ====== Like ======
 
         [HttpPost]

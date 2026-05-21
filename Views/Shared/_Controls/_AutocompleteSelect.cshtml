@@ -1,0 +1,30 @@
+@model Cugger.Models.ViewModels.AutocompleteSelectViewModel
+
+@*
+    Custom autocomplete dropdown — kao <select>, ali umjesto statičnih opcija
+    poziva AJAX endpoint i prikazuje rezultate.
+
+    Hidden input drži pravu vrijednost (Id), text input prikazuje label.
+*@
+
+<div class="ac-control"
+     data-endpoint="@Model.Endpoint"
+     data-min-chars="@Model.MinChars"
+     data-field-name="@Model.FieldName">
+    <input type="hidden" name="@Model.FieldName"
+           value="@(Model.InitialValueId.HasValue ? Model.InitialValueId.Value.ToString() : "")"
+           class="ac-value" />
+
+    <div class="ac-input-wrap">
+        <input type="text"
+               class="form-input ac-input"
+               placeholder="@Model.Placeholder"
+               value="@(Model.InitialLabel ?? string.Empty)"
+               autocomplete="off"
+               spellcheck="false" />
+        <button type="button" class="ac-clear" aria-label="Očisti">✕</button>
+        <span class="ac-spinner" aria-hidden="true"></span>
+    </div>
+
+    <ul class="ac-results" role="listbox"></ul>
+</div>

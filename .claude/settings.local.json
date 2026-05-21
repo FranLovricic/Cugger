@@ -3,7 +3,25 @@
     "allow": [
       "Bash(dotnet run *)",
       "Bash(dotnet build *)",
-      "Bash(dotnet ef *)"
+      "Bash(dotnet ef *)",
+      "PowerShell(Get-Process -Name Cugger -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force)",
+      "Bash(curl -s -o /dev/null -w \"/CheckIn/Edit/1  \\(own\\)     -> %{http_code}\\\\n\" -b /tmp/c.txt http://localhost:5017/CheckIn/Edit/1)",
+      "Bash(curl -s -o /dev/null -w \"/CheckIn/Edit/3  \\(foreign\\) -> %{http_code}\\\\n\" -b /tmp/c.txt http://localhost:5017/CheckIn/Edit/3)",
+      "Bash(curl -s -o /dev/null -w \"/Review/Edit/1   \\(own\\)     -> %{http_code}\\\\n\" -b /tmp/c.txt http://localhost:5017/Review/Edit/1)",
+      "Bash(curl -s -o /dev/null -w \"/Review/Edit/2   \\(foreign\\) -> %{http_code}\\\\n\" -b /tmp/c.txt http://localhost:5017/Review/Edit/2)",
+      "Bash(cd /tmp)",
+      "Bash(curl -s -b c.txt http://localhost:5017/Beer/Edit/1 -o e.html)",
+      "Bash(curl -s \"http://localhost:5017/api/lookup/beers?q=ipa\")",
+      "Bash(curl -s \"http://localhost:5017/api/search/beers?q=stout\")",
+      "Bash(curl -s \"http://localhost:5017/api/lookup/beers?q=IPA\")",
+      "Bash(curl -s \"http://localhost:5017/api/lookup/beers?q=stone\")",
+      "Bash(curl -s \"http://localhost:5017/api/search/beers?q=IPA\")",
+      "Bash(curl -s \"http://localhost:5017/api/search/breweries?q=zagreb\")",
+      "Bash(rm -f c.txt)",
+      "Bash(curl -s -c c.txt http://localhost:5017/login -o login.html)",
+      "Bash(curl -s http://localhost:5017/Beer)",
+      "Bash(curl -s \"http://localhost:5017/api/search/beers\")"
     ]
   }
 }

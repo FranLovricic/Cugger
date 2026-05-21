@@ -115,6 +115,7 @@
 
                     @if (ViewBag.IsOwner == true)
                     {
+                        <a href="/Review/Edit/@Model.Id" class="btn btn-ghost btn-sm">Uredi</a>
                         <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;"
                               onsubmit="return confirm('Sigurno želiš obrisati ovu recenziju?');">
                             @Html.AntiForgeryToken()

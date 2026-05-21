@@ -1,0 +1,51 @@
+@model List<CheckIn>
+
+@if (Model?.Any() == true)
+{
+    <div class="grid grid-2 stagger">
+        @foreach (var checkIn in Model)
+        {
+            <a href="/CheckIn/Details/@checkIn.Id" style="text-decoration: none; color: inherit;">
+                <div class="checkin-card">
+                    <div class="checkin-header">
+                        <div class="checkin-user">
+                            <div class="avatar avatar-sm">
+                                <img src="@(checkIn.User?.AvatarUrl ?? "https://ui-avatars.com/api/?name=User")" alt="@checkIn.User?.Username" />
+                            </div>
+                            <div>
+                                <div class="checkin-user-name">@(checkIn.User?.FirstName) @(checkIn.User?.LastName)</div>
+                                <div class="checkin-user-time">@checkIn.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="checkin-beer">
+                        <div class="checkin-beer-content">
+                            <div class="checkin-beer-icon">🍻</div>
+                            <div class="checkin-info">
+                                <div class="checkin-beer-name">@(checkIn.Beer?.Name ?? "Pivo")</div>
+                                <div class="checkin-beer-meta">
+                                    @if (checkIn.Beer?.Brewery != null)
+                                    {
+                                        <span>🏭 @checkIn.Beer.Brewery.Name</span>
+                                    }
+                                    <span>📍 @(checkIn.Venue?.Name ?? "Lokacija")</span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(checkIn.Comment))
+                                {
+                                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; font-style: italic;">"@checkIn.Comment"</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="checkin-footer">
+                        <div class="checkin-rating"><span>★</span><span>@checkIn.Rating.ToString("F1")</span></div>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}
+else
+{
+    <div class="section-empty"><div class="section-empty-icon">📭</div><p>Nema check-inova za zadani filter.</p></div>
+}

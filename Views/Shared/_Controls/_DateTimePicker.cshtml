@@ -1,0 +1,59 @@
+@model Cugger.Models.ViewModels.DateTimePickerViewModel
+
+@*
+    Custom date/time picker — NIJE native browser datepicker.
+    Renderira kalendar grid + opcionalno time picker. Locale-aware (hr/en preko navigator.language).
+    Hidden input drži ISO string vrijednost (model binding format).
+*@
+
+@{
+    var iso = Model.InitialValue?.ToString("yyyy-MM-ddTHH:mm:ss") ?? "";
+    var display = Model.InitialValue?.ToString(Model.IncludeTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy") ?? "";
+    var minIso = Model.MinDate?.ToString("yyyy-MM-dd") ?? "";
+    var maxIso = Model.MaxDate?.ToString("yyyy-MM-dd") ?? "";
+}
+
+<div class="dt-control"
+     data-field-name="@Model.FieldName"
+     data-include-time="@(Model.IncludeTime ? "1" : "0")"
+     data-min="@minIso"
+     data-max="@maxIso">
+    <input type="hidden" name="@Model.FieldName" value="@iso" class="dt-value" />
+
+    <div class="dt-input-wrap">
+        <input type="text"
+               class="form-input dt-input"
+               placeholder="@(Model.IncludeTime ? "dd.mm.yyyy hh:mm" : "dd.mm.yyyy")"
+               value="@display"
+               autocomplete="off"
+               readonly />
+        <button type="button" class="dt-icon" aria-label="Otvori kalendar">📅</button>
+    </div>
+
+    <div class="dt-popup" role="dialog" aria-hidden="true">
+        <div class="dt-popup-header">
+            <button type="button" class="dt-nav dt-prev" aria-label="Prethodni mjesec">‹</button>
+            <div class="dt-title">
+                <select class="dt-month"></select>
+                <select class="dt-year"></select>
+            </div>
+            <button type="button" class="dt-nav dt-next" aria-label="Sljedeći mjesec">›</button>
+        </div>
+        <div class="dt-weekdays"></div>
+        <div class="dt-grid" role="grid"></div>
+        @if (Model.IncludeTime)
+        {
+            <div class="dt-time-row">
+                <label>Vrijeme</label>
+                <input type="number" class="dt-hour" min="0" max="23" value="@(Model.InitialValue?.Hour ?? 18)" />
+                <span>:</span>
+                <input type="number" class="dt-minute" min="0" max="59" value="@(Model.InitialValue?.Minute ?? 0)" step="5" />
+            </div>
+        }
+        <div class="dt-footer">
+            <button type="button" class="btn btn-ghost btn-sm dt-today">Danas</button>
+            <button type="button" class="btn btn-ghost btn-sm dt-clear">Očisti</button>
+            <button type="button" class="btn btn-primary btn-sm dt-apply">U redu</button>
+        </div>
+    </div>
+</div>

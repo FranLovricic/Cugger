@@ -122,6 +122,79 @@ namespace Cugger.Controllers
             return RedirectToAction(nameof(Details), new { id = checkIn.Id });
         }
 
+        // ====== Edit ======
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Edit(int id)
+        {
+            var checkIn = _checkInRepo.GetById(id);
+            if (checkIn == null) return NotFound();
+
+            var userId = GetCurrentUserId();
+            if (userId == null || checkIn.UserId != userId.Value)
+                return Forbid();
+
+            var model = new CreateCheckInViewModel
+            {
+                BeerId = checkIn.BeerId,
+                VenueId = checkIn.VenueId,
+                Rating = checkIn.Rating,
+                Comment = checkIn.Comment,
+                CheckInDate = checkIn.CheckInDate
+            };
+
+            ViewBag.CheckInId = id;
+            ViewBag.Beers = BuildBeerSelect(checkIn.BeerId);
+            ViewBag.Venues = BuildVenueSelect(checkIn.VenueId);
+            ViewBag.Breadcrumbs = new[]
+            {
+                new BreadcrumbItem("Početna", "/", false),
+                new BreadcrumbItem("Feed", "/feed", false),
+                new BreadcrumbItem($"Check-in #{id}", $"/CheckIn/Details/{id}", false),
+                new BreadcrumbItem("Uredi", $"/CheckIn/Edit/{id}", true)
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CreateCheckInViewModel model)
+        {
+            var checkIn = await _db.CheckIns.FindAsync(id);
+            if (checkIn == null) return NotFound();
+
+            var userId = GetCurrentUserId();
+            if (userId == null || checkIn.UserId != userId.Value)
+                return Forbid();
+
+            if (!await _db.Beers.AnyAsync(b => b.Id == model.BeerId))
+                ModelState.AddModelError(nameof(model.BeerId), "Odaberi postojeće pivo.");
+            if (!await _db.Venues.AnyAsync(v => v.Id == model.VenueId))
+                ModelState.AddModelError(nameof(model.VenueId), "Odaberi postojeći lokal.");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.CheckInId = id;
+                ViewBag.Beers = BuildBeerSelect(model.BeerId);
+                ViewBag.Venues = BuildVenueSelect(model.VenueId);
+                return View(model);
+            }
+
+            checkIn.BeerId = model.BeerId;
+            checkIn.VenueId = model.VenueId;
+            checkIn.Rating = model.Rating;
+            checkIn.Comment = (model.Comment ?? string.Empty).Trim();
+            checkIn.CheckInDate = model.CheckInDate.Date;
+
+            await _db.SaveChangesAsync();
+
+            TempData["Success"] = "Check-in izmijenjen. 🍻";
+            return RedirectToAction(nameof(Details), new { id = checkIn.Id });
+        }
+
         // ====== Delete ======
 
         [HttpPost]

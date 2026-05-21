@@ -17,29 +17,15 @@
     }
 </div>
 
-@if (Model?.Any() == true)
-{
-    <div class="grid grid-3 stagger">
-        @foreach (var venue in Model)
-        {
-            <a href="/Venue/Details/@venue.Id" style="text-decoration: none; color: inherit;">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">@venue.Name</h3>
-                    </div>
-                    <div class="card-body">
-                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.25rem;">📍 @venue.Address</p>
-                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">@venue.City, @venue.Country</p>
-                        <div style="font-size: 0.75rem; color: var(--text-muted); background: rgba(255,255,255,0.03); padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
-                            @venue.Latitude, @venue.Longitude
-                        </div>
-                    </div>
-                </div>
-            </a>
-        }
-    </div>
-}
-else
-{
-    <div class="section-empty"><div class="section-empty-icon">📍</div><p>Nema lokala.</p></div>
-}
+<form data-ajax-search="/api/search/venues" data-target="#venue-results" class="search-bar reveal" style="margin-bottom: 2rem;">
+    <input
+        type="search"
+        name="q"
+        class="search-input"
+        placeholder="🔍 Traži po imenu, gradu ili adresi..."
+        autocomplete="off" />
+</form>
+
+<div id="venue-results">
+    <partial name="_VenueGrid" model="Model" />
+</div>

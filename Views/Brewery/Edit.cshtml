@@ -1,0 +1,65 @@
+@model Cugger.Models.ViewModels.CreateBreweryViewModel
+
+@{
+    ViewData["Title"] = $"Uredi: {Model.Name} - Cugger";
+    var breweryId = (int)ViewBag.BreweryId;
+}
+
+<div class="auth-wrap" style="align-items: flex-start;">
+    <div class="auth-card reveal" style="max-width: 640px;">
+        <div class="section-label">Uređivanje</div>
+        <h1 class="auth-title">Uredi pivovaru 🏭</h1>
+        <p class="auth-subtitle">Ispravi detalje pivovare.</p>
+
+        <form asp-action="Edit" asp-route-id="@breweryId" method="post" class="auth-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="form-summary"></div>
+
+            <div class="form-row">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-input" />
+                <span asp-validation-for="Name" class="form-error"></span>
+            </div>
+
+            <div class="form-row form-row-grid">
+                <div>
+                    <label asp-for="Country" class="form-label"></label>
+                    <input asp-for="Country" class="form-input" />
+                    <span asp-validation-for="Country" class="form-error"></span>
+                </div>
+                <div>
+                    <label asp-for="City" class="form-label"></label>
+                    <input asp-for="City" class="form-input" />
+                    <span asp-validation-for="City" class="form-error"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label asp-for="FoundedYear" class="form-label"></label>
+                <input asp-for="FoundedYear" type="number" min="1000" max="2100" class="form-input" />
+                <span asp-validation-for="FoundedYear" class="form-error"></span>
+            </div>
+
+            <div class="form-row">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-input" rows="4"></textarea>
+                <span asp-validation-for="Description" class="form-error"></span>
+            </div>
+
+            <div class="form-row">
+                <label asp-for="WebsiteUrl" class="form-label"></label>
+                <input asp-for="WebsiteUrl" type="url" class="form-input" />
+                <span asp-validation-for="WebsiteUrl" class="form-error"></span>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+                <a href="/pivovara/@breweryId" class="btn btn-secondary" style="flex: 1;">Odustani</a>
+                <button type="submit" class="btn btn-primary" style="flex: 2;">Spremi izmjene →</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

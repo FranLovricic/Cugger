@@ -2,10 +2,6 @@
 
 @{
     ViewData["Title"] = "Korisnici - Cugger";
-    ViewBag.Breadcrumbs = new[] {
-        new { Title = "Dashboard", Url = "/", IsCurrent = false },
-        new { Title = "Korisnici", Url = "/User", IsCurrent = true }
-    };
 }
 
 <div class="page-header">
@@ -15,35 +11,15 @@
     <p class="page-subtitle">Nađi i prati druge ljubitelje piva.</p>
 </div>
 
-@if (Model?.Any() == true)
-{
-    <div class="card" style="margin-top: 1rem;">
-        <ul class="list">
-            @foreach (var user in Model)
-            {
-                <li class="list-item">
-                    <div class="avatar avatar-md">
-                        <img src="@user.AvatarUrl" alt="@user.FirstName" />
-                    </div>
-                    <a href="/korisnik/@user.Username">
-                        <div class="list-item-content">
-                            <div class="list-item-title">@user.FirstName @user.LastName</div>
-                            <div class="list-item-subtitle">@@@user.Username</div>
-                            @if (!string.IsNullOrEmpty(user.Bio))
-                            {
-                                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">@user.Bio</p>
-                            }
-                        </div>
-                    </a>
-                    <div class="list-item-meta">
-                        <span>Članstvo od @user.RegistrationDate.ToString("MMM yyyy")</span>
-                    </div>
-                </li>
-            }
-        </ul>
-    </div>
-}
-else
-{
-    <div class="section-empty"><div class="section-empty-icon">👤</div><p>Nema korisnika.</p></div>
-}
+<form data-ajax-search="/api/search/users" data-target="#user-results" class="search-bar reveal" style="margin-bottom: 2rem;">
+    <input
+        type="search"
+        name="q"
+        class="search-input"
+        placeholder="🔍 Traži korisnika po imenu, prezimenu ili usernameu..."
+        autocomplete="off" />
+</form>
+
+<div id="user-results">
+    <partial name="_UserList" model="Model" />
+</div>

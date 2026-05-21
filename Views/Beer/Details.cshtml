@@ -59,6 +59,12 @@
             {
                 <a href="/CheckIn/Create?beerId=@Model.Id" class="btn btn-primary">+ Check-in 🍻</a>
                 <a href="/Review/Create?beerId=@Model.Id" class="btn btn-secondary">+ Recenzija</a>
+                <a href="/Beer/Edit/@Model.Id" class="btn btn-ghost">Uredi</a>
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;"
+                      onsubmit="return confirm('Sigurno želiš obrisati ovo pivo? (samo ako nema check-inova/recenzija)');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-danger">Obriši</button>
+                </form>
             }
         </div>
     </div>

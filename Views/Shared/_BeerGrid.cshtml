@@ -1,0 +1,52 @@
+@model List<Beer>
+
+@if (Model?.Any() == true)
+{
+    <div class="grid grid-4 stagger">
+        @foreach (var beer in Model)
+        {
+            <a href="/pivo/@beer.Id" style="text-decoration: none; color: inherit;">
+                <div class="card beer-card" data-style="@beer.Style">
+                    <div class="card-body" style="text-align: center; padding: 2rem 1.5rem;">
+                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🍺</div>
+                        <h3 class="card-title" style="font-size: 1.05rem; margin-bottom: 0.75rem;">@beer.Name</h3>
+                        <div class="tag tag-style" style="margin-bottom: 1rem;">@beer.Style</div>
+
+                        @if (beer.RatingCount > 0)
+                        {
+                            <div style="margin-bottom: 0.75rem; color: var(--warning); font-weight: 700;">
+                                ★ @beer.AverageRating.ToString("F1")
+                                <span style="color: var(--text-muted); font-weight: 400; font-size: 0.8rem;">
+                                    (@beer.RatingCount)
+                                </span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="margin-bottom: 0.75rem; color: var(--text-muted); font-size: 0.85rem;">
+                                Nije ocijenjeno
+                            </div>
+                        }
+
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                            @beer.ABV% ABV · @beer.IBU IBU
+                        </div>
+                        @if (beer.Brewery != null)
+                        {
+                            <div style="padding-top: 1rem; border-top: 1px solid var(--border); margin-top: 1rem;">
+                                <span class="link-arrow" style="font-size: 0.8rem;">@beer.Brewery.Name <span>→</span></span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}
+else
+{
+    <div class="section-empty">
+        <div class="section-empty-icon">🍺</div>
+        <p>Nema piva za zadane filtere.</p>
+    </div>
+}

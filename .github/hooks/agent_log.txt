@@ -285,3 +285,111 @@
 {"timestamp":"2026-05-07T16:03:21.924Z","hook_event_name":"PreToolUse","session_id":"lab3-efcore-001","tool_name":"run_in_terminal","tool_input":{"command":"dotnet ef migrations add InitialCreate","explanation":"Generate initial EF Core migration","goal":"Create database migration","mode":"sync","timeout":30000},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
 
 {"timestamp":"2026-05-07T16:03:42.155Z","hook_event_name":"PreToolUse","session_id":"lab3-efcore-001","tool_name":"manage_todo_list","tool_input":{"todoList":[{"id":1,"title":"Analyze existing architecture","status":"completed"},{"id":2,"title":"Install EF Core packages","status":"completed"},{"id":3,"title":"Annotate models","status":"completed"},{"id":4,"title":"Create DbContext","status":"completed"},{"id":5,"title":"Implement repositories","status":"completed"},{"id":6,"title":"Configure custom routing","status":"completed"},{"id":7,"title":"Redesign UI/UX","status":"completed"},{"id":8,"title":"Generate documentation","status":"completed"},{"id":9,"title":"Build and validate migration","status":"completed"}]},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:12:04.118Z","hook_event_name":"UserPromptSubmit","session_id":"lab4-crud-ajax-001","prompt":"Lab 4 zahtjevi: kompletno funkcionalna CRUD podrska za sve entitete, padajuci izbornik s AJAX autocomplete pretragom, client+server side validacija, napredno koristenje JavaScripta i custom datumska kontrola kao partial view (hr+en lokalizacija, ne native browser picker). Provjeri sto vec postoji i nadodaj sto fali.","cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:12:21.557Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"read_file","tool_input":{"file":"Controllers/BeerController.cs","goal":"Audit existing CRUD actions before extending with Edit/Delete"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:12:34.902Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"read_file","tool_input":{"file":"Controllers/BreweryController.cs","goal":"Inspect brewery controller for missing CRUD endpoints"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:12:42.715Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"read_file","tool_input":{"file":"Controllers/VenueController.cs","goal":"Inspect venue controller for missing CRUD endpoints"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:12:51.404Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"read_file","tool_input":{"file":"Controllers/CheckInController.cs","goal":"Inspect checkin controller for missing CRUD endpoints"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:13:02.880Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"read_file","tool_input":{"file":"Controllers/ReviewController.cs","goal":"Inspect review controller for missing CRUD endpoints"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:13:25.612Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Models/ViewModels/ControlViewModels.cs","goal":"Define AutocompleteSelectViewModel, DateTimePickerViewModel and LookupResult for custom controls"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:13:48.330Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Models/ViewModels/BeerViewModels.cs","changes":"Add DataAnnotations [Required], [StringLength], [Range(0,20)] for ABV, [Range(0,150)] for IBU"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:13:59.207Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Models/ViewModels/BreweryViewModels.cs","changes":"Add [Required], [StringLength], [Url] validations on form view models"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:14:07.965Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Models/ViewModels/VenueViewModels.cs","changes":"Add validation attributes for venue name, address, city, country"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:14:16.118Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Models/ViewModels/CheckInViewModels.cs","changes":"Add [Range(0,5)] for rating, [Required] for beer/venue ids, [StringLength(500)] for comment"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:14:23.448Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Models/ViewModels/ReviewViewModels.cs","changes":"Add [Range(0,5)] for rating and [StringLength(2000)] for comment"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:14:55.391Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Controllers/ApiController.cs","goal":"Create AJAX endpoints: /api/lookup/{beers|breweries|venues|users} for autocomplete + /api/search/{beers|breweries|venues|users|checkins|reviews} returning partial HTML"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:15:21.704Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/Shared/_Controls/_AutocompleteSelect.cshtml","goal":"Custom autocomplete partial: hidden input + visible text input + .ac-results dropdown wired via data-* attributes"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:15:48.219Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/Shared/_Controls/_DateTimePicker.cshtml","goal":"Custom datetime picker partial with month/year selects, prev/next nav, weekday header, 6-week day grid, optional time inputs and today/clear/apply buttons - NOT native browser picker"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:16:42.118Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"wwwroot/js/cugger-controls.js","goal":"Vanilla JS IIFE module: initAutocomplete (AbortController, debounce, keyboard nav, regex highlight), initDateTimePicker (locale-aware via navigator.language, Monday-first 42-cell grid), initAjaxSearch (debounced form refresh) + window.CuggerControls.wireAll(scope)"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:17:35.882Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"wwwroot/css/cugger.css","changes":"Add .ac-control, .ac-results, .ac-result, .ac-active, mark highlight, .ac-spinner; .dt-control, .dt-popup, .dt-grid, .dt-day variants; .ajax-loading shimmer; .input-validation-error red border and validation-shake keyframe"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:18:14.605Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Views/Shared/_ValidationScriptsPartial.cshtml","changes":"Add $.validator.setDefaults({onfocusout, onkeyup, errorClass:'input-validation-error'}) and $.validator.unobtrusive.parse(form) so validation fires on blur"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:18:32.041Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Views/Shared/_Layout.cshtml","changes":"Reference wwwroot/js/cugger-controls.js after site.js so autocomplete and datetime picker controls bootstrap on every page"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:19:01.755Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Controllers/BeerController.cs","changes":"Add [Authorize] Edit (GET+POST) and Delete (POST) with ownership/FK checks; ModelState.IsValid guard on POST"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:19:19.892Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Controllers/BreweryController.cs","changes":"Add Edit (GET+POST) and Delete (POST) actions; block delete when brewery still has beers"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:19:36.301Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Controllers/VenueController.cs","changes":"Add Edit (GET+POST) and Delete (POST) actions with FK safety"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:19:54.480Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Controllers/CheckInController.cs","changes":"Add Edit/Delete - ownership check returns Forbid() when current user != check-in author"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:20:12.117Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Controllers/ReviewController.cs","changes":"Add Edit/Delete with ownership enforcement on POST handlers"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:20:38.553Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/Beer/Edit.cshtml","goal":"Edit form for Beer with autocomplete for Brewery and validation hooks"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:20:52.404Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/Brewery/Edit.cshtml","goal":"Edit form for Brewery with full validation"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:21:04.917Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/Venue/Edit.cshtml","goal":"Edit form for Venue"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:21:21.886Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/CheckIn/Edit.cshtml","goal":"Edit form for CheckIn with Beer/Venue autocomplete and DateTime picker partial"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:21:34.602Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/Review/Edit.cshtml","goal":"Edit form for Review with Beer autocomplete and rating slider"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:22:01.288Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/Shared/_BeerGrid.cshtml","goal":"Extract beer grid markup so the same partial powers initial render AND AJAX search responses"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:22:09.045Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/Shared/_BreweryGrid.cshtml","goal":"Brewery grid partial reused by AJAX endpoint"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:22:17.211Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/Shared/_VenueGrid.cshtml","goal":"Venue grid partial reused by AJAX endpoint"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:22:24.880Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/Shared/_UserList.cshtml","goal":"User list partial reused by AJAX endpoint"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:22:33.092Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/Shared/_CheckInGrid.cshtml","goal":"Check-in grid partial reused by AJAX endpoint"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:22:42.330Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"create_file","tool_input":{"file":"Views/Shared/_ReviewGrid.cshtml","goal":"Review grid partial reused by AJAX endpoint"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:23:11.117Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Views/Beer/Index.cshtml","changes":"Replace static grid with data-ajax-search='/api/search/beers' form + #beer-results container rendering _BeerGrid partial; wire style filter chips to hidden style input"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:23:25.819Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Views/Brewery/Index.cshtml","changes":"Convert to AJAX search form targeting #brewery-results"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:23:37.408Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Views/Venue/Index.cshtml","changes":"Convert to AJAX search form targeting #venue-results"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:23:50.601Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Views/User/Index.cshtml","changes":"Convert to AJAX search form targeting #user-results"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:24:03.917Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Views/CheckIn/Index.cshtml","changes":"Convert to AJAX search form targeting #checkin-results"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:24:16.502Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Views/Review/Index.cshtml","changes":"Convert to AJAX search form targeting #review-results"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:24:45.221Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Views/Beer/Create.cshtml","changes":"Replace Brewery select with _AutocompleteSelect partial bound to /api/lookup/breweries"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:25:02.918Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Views/CheckIn/Create.cshtml","changes":"Use _AutocompleteSelect for Beer+Venue and _DateTimePicker for CheckInDate"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:25:16.119Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"run_in_terminal","tool_input":{"command":"dotnet build","explanation":"Verify Lab 4 changes compile","goal":"Catch missing usings or viewmodel mismatches before runtime","mode":"sync","timeout":60000},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:25:48.880Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"run_in_terminal","tool_input":{"command":"dotnet run --no-build","explanation":"Start app for AJAX/autocomplete smoke test","goal":"Spin up Kestrel on :5000","mode":"async"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:26:31.402Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"run_in_terminal","tool_input":{"command":"curl -s http://localhost:5000/api/lookup/beers?q=stone","explanation":"Test autocomplete endpoint returns matches","goal":"Verify JSON shape with id/label/subLabel","mode":"sync","timeout":15000},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:26:42.011Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"edit_file","tool_input":{"file":"Controllers/ApiController.cs","changes":"Force .ToLower() on both sides of every Contains() so SQLite case-insensitive search works (q=stone must match Stone Brewing)"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:27:04.717Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"run_in_terminal","tool_input":{"command":"Get-Process -Name Cugger -ErrorAction SilentlyContinue | Stop-Process -Force; dotnet run","explanation":"Kill stale Cugger.exe holding the assembly lock and restart","goal":"Pick up ApiController fix","mode":"async"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:27:55.339Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"run_in_terminal","tool_input":{"command":"curl -s http://localhost:5000/api/search/beers?q=ipa&style=IPA","explanation":"Confirm partial-HTML search endpoint with combined filter","goal":"Verify beer-card markup is returned","mode":"sync","timeout":15000},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:28:14.117Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"delegate_to_subagent","tool_input":{"agent":"ux-ui","goal":"Polish .ac-result hover, dt-day-selected ring and validation-shake keyframe so the controls feel responsive"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:28:42.880Z","hook_event_name":"UserPromptSubmit","session_id":"lab4-crud-ajax-001","prompt":"Ocjenjuje se: CRUD 2pt + autocomplete 2pt + validacija 1pt + napredni JS 1pt + datumska kontrola 1pt = 7pt. Napisi mi gdje je sto implementirano.","cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:29:01.218Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"grep_search","tool_input":{"query":"public async Task<IActionResult> (Edit|Delete)","includePattern":"Controllers/*Controller.cs","goal":"Enumerate Edit/Delete actions across controllers for the grading map"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:29:18.512Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"grep_search","tool_input":{"query":"Required|Range|StringLength|EmailAddress|Url|Compare","includePattern":"Models/ViewModels/*.cs","goal":"List DataAnnotations validators backing the validation criterion"},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}
+
+{"timestamp":"2026-05-19T18:29:41.998Z","hook_event_name":"PreToolUse","session_id":"lab4-crud-ajax-001","tool_name":"manage_todo_list","tool_input":{"todoList":[{"id":1,"status":"completed","title":"CRUD Edit+Delete for Beer/Brewery/Venue/CheckIn/Review"},{"id":2,"status":"completed","title":"Autocomplete partial + /api/lookup endpoints + JS module"},{"id":3,"status":"completed","title":"Server-side validation via DataAnnotations + ModelState"},{"id":4,"status":"completed","title":"Client-side blur validation via $.validator.setDefaults"},{"id":5,"status":"completed","title":"Custom DateTime picker partial (hr/en locale, NOT native)"},{"id":6,"status":"completed","title":"Advanced JS: AbortController, debounce, IIFE, keyboard nav, regex highlight"},{"id":7,"status":"completed","title":"Lab 4 grading map document"}]},"cwd":"d:\DOTNET-PROJEKTI\Cugger"}

@@ -28,6 +28,15 @@
         </div>
         <div class="header-actions">
             <a href="/Venue" class="btn btn-secondary">← Nazad</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a href="/Venue/Edit/@Model.Id" class="btn btn-ghost">Uredi</a>
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;"
+                      onsubmit="return confirm('Sigurno želiš obrisati ovaj lokal? (samo ako nema check-inova)');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-danger">Obriši</button>
+                </form>
+            }
         </div>
     </div>
 </div>

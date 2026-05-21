@@ -50,6 +50,7 @@
             <a href="/feed" class="btn btn-secondary">← Nazad</a>
             @if (ViewBag.IsOwner == true)
             {
+                <a href="/CheckIn/Edit/@Model.Id" class="btn btn-ghost">Uredi</a>
                 <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;"
                       onsubmit="return confirm('Sigurno želiš obrisati ovaj check-in?');">
                     @Html.AntiForgeryToken()

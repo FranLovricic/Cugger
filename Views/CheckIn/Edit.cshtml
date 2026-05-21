@@ -1,18 +1,21 @@
 @model Cugger.Models.ViewModels.CreateCheckInViewModel
 
 @{
-    ViewData["Title"] = "Novi check-in - Cugger";
+    ViewData["Title"] = "Uredi check-in - Cugger";
     var beers = ViewBag.Beers as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>;
     var venues = ViewBag.Venues as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>;
+    var checkInId = (int)ViewBag.CheckInId;
+    var initialBeerLabel = beers?.FirstOrDefault(x => x.Value == Model.BeerId.ToString())?.Text;
+    var initialVenueLabel = venues?.FirstOrDefault(x => x.Value == Model.VenueId.ToString())?.Text;
 }
 
 <div class="auth-wrap" style="align-items: flex-start;">
     <div class="auth-card reveal" style="max-width: 640px;">
-        <div class="section-label">Toast 🍻</div>
-        <h1 class="auth-title">Što piješ?</h1>
-        <p class="auth-subtitle">Podijeli što ovog trenutka kušaš sa zajednicom.</p>
+        <div class="section-label">Uređivanje</div>
+        <h1 class="auth-title">Uredi check-in 🍻</h1>
+        <p class="auth-subtitle">Ispravi detalje svog check-ina.</p>
 
-        <form asp-action="Create" method="post" class="auth-form">
+        <form asp-action="Edit" asp-route-id="@checkInId" method="post" class="auth-form">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="form-summary"></div>
 
@@ -21,13 +24,10 @@
                 <partial name="_Controls/_AutocompleteSelect" model='new Cugger.Models.ViewModels.AutocompleteSelectViewModel {
                     FieldName = "BeerId",
                     Endpoint = "/api/lookup/beers",
-                    Placeholder = "Traži pivo po imenu ili pivovari...",
-                    InitialValueId = Model.PrefilledBeerId,
-                    InitialLabel = Model.PrefilledBeerId.HasValue ? beers?.FirstOrDefault(x => x.Value == Model.PrefilledBeerId.ToString())?.Text : null }' />
+                    Placeholder = "Traži pivo...",
+                    InitialValueId = Model.BeerId,
+                    InitialLabel = initialBeerLabel }' />
                 <span asp-validation-for="BeerId" class="form-error"></span>
-                <small style="display:block; margin-top: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">
-                    Nema piva? <a href="/Beer/Create" class="forgot-link">Dodaj novo →</a>
-                </small>
             </div>
 
             <div class="form-row">
@@ -35,11 +35,10 @@
                 <partial name="_Controls/_AutocompleteSelect" model='new Cugger.Models.ViewModels.AutocompleteSelectViewModel {
                     FieldName = "VenueId",
                     Endpoint = "/api/lookup/venues",
-                    Placeholder = "Traži lokal po imenu, gradu ili adresi..." }' />
+                    Placeholder = "Traži lokal...",
+                    InitialValueId = Model.VenueId,
+                    InitialLabel = initialVenueLabel }' />
                 <span asp-validation-for="VenueId" class="form-error"></span>
-                <small style="display:block; margin-top: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">
-                    Nema lokala? <a href="/Venue/Create" class="forgot-link">Dodaj novi →</a>
-                </small>
             </div>
 
             <div class="form-row">
@@ -54,7 +53,7 @@
 
             <div class="form-row">
                 <label asp-for="Comment" class="form-label"></label>
-                <textarea asp-for="Comment" class="form-input" rows="3" placeholder="Kako ti je sjelo? (opcionalno)"></textarea>
+                <textarea asp-for="Comment" class="form-input" rows="3"></textarea>
                 <span asp-validation-for="Comment" class="form-error"></span>
             </div>
 
@@ -63,14 +62,13 @@
                 <partial name="_Controls/_DateTimePicker" model='new Cugger.Models.ViewModels.DateTimePickerViewModel {
                     FieldName = "CheckInDate",
                     InitialValue = Model.CheckInDate,
-                    IncludeTime = false,
-                    MaxDate = DateTime.UtcNow.Date }' />
+                    IncludeTime = false }' />
                 <span asp-validation-for="CheckInDate" class="form-error"></span>
             </div>
 
             <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
-                <a href="/feed" class="btn btn-secondary" style="flex: 1;">Odustani</a>
-                <button type="submit" class="btn btn-primary" style="flex: 2;">Pošalji check-in 🍻</button>
+                <a href="/CheckIn/Details/@checkInId" class="btn btn-secondary" style="flex: 1;">Odustani</a>
+                <button type="submit" class="btn btn-primary" style="flex: 2;">Spremi izmjene →</button>
             </div>
         </form>
     </div>

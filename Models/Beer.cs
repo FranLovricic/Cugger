@@ -37,5 +37,6 @@ namespace Cugger.Models
         public virtual Brewery? Brewery { get; set; }
         public virtual ICollection<CheckIn> CheckIns { get; set; } = new List<CheckIn>();
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public virtual ICollection<BeerPhoto> Photos { get; set; } = new List<BeerPhoto>();
     }
 }

@@ -13,14 +13,14 @@ namespace Cugger.Repositories
             _db = db;
         }
 
-        public List<User> GetAll()
+        public List<AppUser> GetAll()
         {
             return _db.Users
-                .OrderBy(u => u.Username)
+                .OrderBy(u => u.UserName)
                 .ToList();
         }
 
-        public User? GetById(int id)
+        public AppUser? GetById(int id)
         {
             return _db.Users
                 .Include(u => u.CheckIns)
@@ -28,9 +28,9 @@ namespace Cugger.Repositories
                 .FirstOrDefault(u => u.Id == id);
         }
 
-        public User? GetByUsername(string username)
+        public AppUser? GetByUsername(string username)
         {
-            return _db.Users.FirstOrDefault(u => u.Username == username);
+            return _db.Users.FirstOrDefault(u => u.UserName == username);
         }
 
         public int GetCheckInCount(int userId)
@@ -39,7 +39,7 @@ namespace Cugger.Repositories
         public int GetFriendsCount(int userId)
             => _db.Friendships.Count(f => f.FromUserId == userId);
 
-        public List<User> GetFriends(int userId)
+        public List<AppUser> GetFriends(int userId)
         {
             var friendIds = _db.Friendships
                 .Where(f => f.FromUserId == userId)
@@ -48,7 +48,7 @@ namespace Cugger.Repositories
             return _db.Users.Where(u => friendIds.Contains(u.Id)).ToList();
         }
 
-        public List<User> GetMostActive(int count = 5)
+        public List<AppUser> GetMostActive(int count = 5)
         {
             return _db.Users
                 .Select(u => new { U = u, Cnt = u.CheckIns.Count() })

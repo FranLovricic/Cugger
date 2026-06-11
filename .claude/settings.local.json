@@ -21,7 +21,8 @@
       "Bash(rm -f c.txt)",
       "Bash(curl -s -c c.txt http://localhost:5017/login -o login.html)",
       "Bash(curl -s http://localhost:5017/Beer)",
-      "Bash(curl -s \"http://localhost:5017/api/search/beers\")"
+      "Bash(curl -s \"http://localhost:5017/api/search/beers\")",
+      "PowerShell(dotnet --version)"
     ]
   }
 }

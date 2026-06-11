@@ -25,7 +25,7 @@ namespace Cugger.Models
 
         public int Likes { get; set; }
 
-        public virtual User? User { get; set; }
+        public virtual AppUser? User { get; set; }
         public virtual Beer? Beer { get; set; }
     }
 }

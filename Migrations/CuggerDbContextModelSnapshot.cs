@@ -15,7 +15,181 @@ namespace Cugger.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.9");
+
+            modelBuilder.Entity("Cugger.Models.AppUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AvatarUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Bio")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("RegistrationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("Users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessFailedCount = 0,
+                            AvatarUrl = "https://ui-avatars.com/api/?name=Dragan+Maric&background=F59E0B&color=fff",
+                            Bio = "Apsolvent pivarstva i ljubitelj kvalitetnih piva",
+                            ConcurrencyStamp = "c0000000-0000-0000-0000-000000000001",
+                            Email = "dragan@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Dragan",
+                            LastName = "Marić",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "DRAGAN@EXAMPLE.COM",
+                            NormalizedUserName = "PIVO_LOVER",
+                            PasswordHash = "SEED_NEEDS_HASH",
+                            PhoneNumberConfirmed = false,
+                            RegistrationDate = new DateTime(2023, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "b0000000-0000-0000-0000-000000000001",
+                            TwoFactorEnabled = false,
+                            UserName = "pivo_lover"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessFailedCount = 0,
+                            AvatarUrl = "https://ui-avatars.com/api/?name=Marko+Horvat&background=D97706&color=fff",
+                            Bio = "IPA entuzijast, traži nove craft pivovare",
+                            ConcurrencyStamp = "c0000000-0000-0000-0000-000000000002",
+                            Email = "marko@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Marko",
+                            LastName = "Horvat",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "MARKO@EXAMPLE.COM",
+                            NormalizedUserName = "HOP_KING",
+                            PasswordHash = "SEED_NEEDS_HASH",
+                            PhoneNumberConfirmed = false,
+                            RegistrationDate = new DateTime(2023, 3, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "b0000000-0000-0000-0000-000000000002",
+                            TwoFactorEnabled = false,
+                            UserName = "hop_king"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AccessFailedCount = 0,
+                            AvatarUrl = "https://ui-avatars.com/api/?name=Ana+Novak&background=FCD34D&color=111",
+                            Bio = "Ljubiteljica tamnih piva i europskih pivovara",
+                            ConcurrencyStamp = "c0000000-0000-0000-0000-000000000003",
+                            Email = "ana@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Ana",
+                            LastName = "Novak",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "ANA@EXAMPLE.COM",
+                            NormalizedUserName = "STOUT_FAN",
+                            PasswordHash = "SEED_NEEDS_HASH",
+                            PhoneNumberConfirmed = false,
+                            RegistrationDate = new DateTime(2023, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "b0000000-0000-0000-0000-000000000003",
+                            TwoFactorEnabled = false,
+                            UserName = "stout_fan"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AccessFailedCount = 0,
+                            AvatarUrl = "https://ui-avatars.com/api/?name=Luka+Kovac&background=A16207&color=fff",
+                            Bio = "Putujem svijetom u potrazi za savršenim pivom",
+                            ConcurrencyStamp = "c0000000-0000-0000-0000-000000000004",
+                            Email = "luka@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Luka",
+                            LastName = "Kovač",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "LUKA@EXAMPLE.COM",
+                            NormalizedUserName = "CRAFT_EXPLORER",
+                            PasswordHash = "SEED_NEEDS_HASH",
+                            PhoneNumberConfirmed = false,
+                            RegistrationDate = new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "b0000000-0000-0000-0000-000000000004",
+                            TwoFactorEnabled = false,
+                            UserName = "craft_explorer"
+                        });
+                });
 
             modelBuilder.Entity("Cugger.Models.Beer", b =>
                 {
@@ -145,6 +319,53 @@ namespace Cugger.Migrations
                             Name = "Pšenica",
                             Style = 6
                         });
+                });
+
+            modelBuilder.Entity("Cugger.Models.BeerPhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BeerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(260)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RelativePath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StoredFileName")
+                        .IsRequired()
+                        .HasMaxLength(260)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("UploadedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BeerId");
+
+                    b.HasIndex("UploadedByUserId");
+
+                    b.ToTable("BeerPhotos");
                 });
 
             modelBuilder.Entity("Cugger.Models.Brewery", b =>
@@ -545,141 +766,6 @@ namespace Cugger.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Cugger.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("AvatarUrl")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("EmailConfirmationToken")
-                        .HasMaxLength(128)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("EmailConfirmationTokenExpiresAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsEmailConfirmed")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PasswordResetToken")
-                        .HasMaxLength(128)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("PasswordResetTokenExpiresAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PasswordSalt")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("RegistrationDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("Username")
-                        .IsUnique();
-
-                    b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AvatarUrl = "https://ui-avatars.com/api/?name=Dragan+Maric&background=F59E0B&color=fff",
-                            Bio = "Apsolvent pivarstva i ljubitelj kvalitetnih piva",
-                            Email = "dragan@example.com",
-                            FirstName = "Dragan",
-                            IsEmailConfirmed = true,
-                            LastName = "Marić",
-                            PasswordHash = "SEED_NEEDS_HASH",
-                            PasswordSalt = "SEED_NEEDS_HASH",
-                            RegistrationDate = new DateTime(2023, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Username = "pivo_lover"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AvatarUrl = "https://ui-avatars.com/api/?name=Marko+Horvat&background=D97706&color=fff",
-                            Bio = "IPA entuzijast, traži nove craft pivovare",
-                            Email = "marko@example.com",
-                            FirstName = "Marko",
-                            IsEmailConfirmed = true,
-                            LastName = "Horvat",
-                            PasswordHash = "SEED_NEEDS_HASH",
-                            PasswordSalt = "SEED_NEEDS_HASH",
-                            RegistrationDate = new DateTime(2023, 3, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Username = "hop_king"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AvatarUrl = "https://ui-avatars.com/api/?name=Ana+Novak&background=FCD34D&color=111",
-                            Bio = "Ljubiteljica tamnih piva i europskih pivovara",
-                            Email = "ana@example.com",
-                            FirstName = "Ana",
-                            IsEmailConfirmed = true,
-                            LastName = "Novak",
-                            PasswordHash = "SEED_NEEDS_HASH",
-                            PasswordSalt = "SEED_NEEDS_HASH",
-                            RegistrationDate = new DateTime(2023, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Username = "stout_fan"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AvatarUrl = "https://ui-avatars.com/api/?name=Luka+Kovac&background=A16207&color=fff",
-                            Bio = "Putujem svijetom u potrazi za savršenim pivom",
-                            Email = "luka@example.com",
-                            FirstName = "Luka",
-                            IsEmailConfirmed = true,
-                            LastName = "Kovač",
-                            PasswordHash = "SEED_NEEDS_HASH",
-                            PasswordSalt = "SEED_NEEDS_HASH",
-                            RegistrationDate = new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Username = "craft_explorer"
-                        });
-                });
-
             modelBuilder.Entity("Cugger.Models.Venue", b =>
                 {
                     b.Property<int>("Id")
@@ -769,6 +855,175 @@ namespace Cugger.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "a0000000-0000-0000-0000-000000000001",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConcurrencyStamp = "a0000000-0000-0000-0000-000000000002",
+                            Name = "Member",
+                            NormalizedName = "MEMBER"
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 1,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            UserId = 3,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            UserId = 4,
+                            RoleId = 2
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
             modelBuilder.Entity("Cugger.Models.Beer", b =>
                 {
                     b.HasOne("Cugger.Models.Brewery", "Brewery")
@@ -780,6 +1035,24 @@ namespace Cugger.Migrations
                     b.Navigation("Brewery");
                 });
 
+            modelBuilder.Entity("Cugger.Models.BeerPhoto", b =>
+                {
+                    b.HasOne("Cugger.Models.Beer", "Beer")
+                        .WithMany("Photos")
+                        .HasForeignKey("BeerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cugger.Models.AppUser", "UploadedBy")
+                        .WithMany()
+                        .HasForeignKey("UploadedByUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Beer");
+
+                    b.Navigation("UploadedBy");
+                });
+
             modelBuilder.Entity("Cugger.Models.CheckIn", b =>
                 {
                     b.HasOne("Cugger.Models.Beer", "Beer")
@@ -788,7 +1061,7 @@ namespace Cugger.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Cugger.Models.User", "User")
+                    b.HasOne("Cugger.Models.AppUser", "User")
                         .WithMany("CheckIns")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -809,13 +1082,13 @@ namespace Cugger.Migrations
 
             modelBuilder.Entity("Cugger.Models.Friendship", b =>
                 {
-                    b.HasOne("Cugger.Models.User", "FromUser")
+                    b.HasOne("Cugger.Models.AppUser", "FromUser")
                         .WithMany("FromFriendships")
                         .HasForeignKey("FromUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Cugger.Models.User", "ToUser")
+                    b.HasOne("Cugger.Models.AppUser", "ToUser")
                         .WithMany("ToFriendships")
                         .HasForeignKey("ToUserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -834,7 +1107,7 @@ namespace Cugger.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Cugger.Models.User", "User")
+                    b.HasOne("Cugger.Models.AppUser", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -845,19 +1118,58 @@ namespace Cugger.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Cugger.Models.Beer", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.Navigation("CheckIns");
-
-                    b.Navigation("Reviews");
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Cugger.Models.Brewery", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.Navigation("Beers");
+                    b.HasOne("Cugger.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Cugger.Models.User", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.HasOne("Cugger.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cugger.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.HasOne("Cugger.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Cugger.Models.AppUser", b =>
                 {
                     b.Navigation("CheckIns");
 
@@ -866,6 +1178,20 @@ namespace Cugger.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("ToFriendships");
+                });
+
+            modelBuilder.Entity("Cugger.Models.Beer", b =>
+                {
+                    b.Navigation("CheckIns");
+
+                    b.Navigation("Photos");
+
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("Cugger.Models.Brewery", b =>
+                {
+                    b.Navigation("Beers");
                 });
 
             modelBuilder.Entity("Cugger.Models.Venue", b =>

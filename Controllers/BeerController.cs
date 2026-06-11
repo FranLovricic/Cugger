@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Cugger.Data;
 using Cugger.Models;
 using Cugger.Models.ViewModels;
@@ -76,7 +76,7 @@ namespace Cugger.Controllers
         // ====== Create ======
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewBag.Breweries = BuildBrewerySelect();
@@ -90,7 +90,7 @@ namespace Cugger.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateBeerViewModel model)
         {
@@ -124,7 +124,7 @@ namespace Cugger.Controllers
         // ====== Edit ======
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             var beer = _beerRepo.GetById(id);
@@ -155,7 +155,7 @@ namespace Cugger.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CreateBeerViewModel model)
         {
@@ -189,7 +189,7 @@ namespace Cugger.Controllers
         // ====== Delete ======
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {

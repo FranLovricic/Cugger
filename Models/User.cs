@@ -2,6 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cugger.Models
 {
+    /// <summary>
+    /// LEGACY (lab 2-4): zamijenjen s <see cref="AppUser"/> (ASP.NET Core Identity) u lab-5.
+    /// Klasa je zadržana samo kao povijesna referenca i NIJE dio EF modela.
+    /// </summary>
     public class User
     {
         [Key]

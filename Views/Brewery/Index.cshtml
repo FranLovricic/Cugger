@@ -1,4 +1,4 @@
-@model List<Brewery>
+﻿@model List<Brewery>
 
 @{
     ViewData["Title"] = "Pivovare - Cugger";
@@ -9,7 +9,7 @@
     <div class="section-label">Proizvođači</div>
     <h1 class="page-title">Pivovare</h1>
     <p class="page-subtitle">Otkrij pivovare iz cijelog svijeta.</p>
-    @if (User.Identity?.IsAuthenticated == true)
+    @if (User.IsInRole("Admin"))
     {
         <div style="margin-top: 1.5rem;">
             <a href="/Brewery/Create" class="btn btn-primary">+ Dodaj pivovaru</a>

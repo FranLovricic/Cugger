@@ -1,9 +1,8 @@
-@model User
-
+﻿@model AppUser
 @{
     ViewData["Title"] = $"{Model?.FirstName} {Model?.LastName} - Profil";
     var checkIns = ViewBag.CheckIns as List<CheckIn>;
-    var friends = ViewBag.Friends as List<User>;
+    var friends = ViewBag.Friends as List<AppUser>;
     var reviews = ViewBag.Reviews as List<Review>;
 }
 

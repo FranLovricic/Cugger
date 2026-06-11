@@ -1,4 +1,4 @@
-@model List<Venue>
+﻿@model List<Venue>
 
 @{
     ViewData["Title"] = "Lokali - Cugger";
@@ -9,7 +9,7 @@
     <div class="section-label">Mjesta</div>
     <h1 class="page-title">Lokali</h1>
     <p class="page-subtitle">Otkrij gdje se obavljaju check-ini.</p>
-    @if (User.Identity?.IsAuthenticated == true)
+    @if (User.IsInRole("Admin"))
     {
         <div style="margin-top: 1.5rem;">
             <a href="/Venue/Create" class="btn btn-primary">+ Dodaj lokal</a>

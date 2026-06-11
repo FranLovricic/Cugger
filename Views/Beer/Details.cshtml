@@ -59,6 +59,9 @@
             {
                 <a href="/CheckIn/Create?beerId=@Model.Id" class="btn btn-primary">+ Check-in 🍻</a>
                 <a href="/Review/Create?beerId=@Model.Id" class="btn btn-secondary">+ Recenzija</a>
+            }
+            @if (User.IsInRole("Admin"))
+            {
                 <a href="/Beer/Edit/@Model.Id" class="btn btn-ghost">Uredi</a>
                 <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;"
                       onsubmit="return confirm('Sigurno želiš obrisati ovo pivo? (samo ako nema check-inova/recenzija)');">
@@ -172,3 +175,129 @@
         <div class="section-empty"><div class="section-empty-icon">📝</div><p>Nema recenzija.</p></div>
     }
 </section>
+
+<div class="divider"></div>
+
+<!-- DATOTEKE (lab-5): Dropzone upload + AJAX lista + brisanje -->
+<section class="section reveal" id="beer-files-section">
+    <div class="section-label">Datoteke</div>
+    <h2 class="section-title" style="font-size: 1.75rem;">Fotografije i dokumenti</h2>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <form action="/api/beers/@Model.Id/photos"
+              class="dropzone"
+              id="beer-photo-dropzone"
+              style="border: 2px dashed var(--text-muted); border-radius: 8px; background: transparent; margin-bottom: 1.5rem;">
+            <div class="dz-message" data-dz-message>
+                <span>📤 Dovuci datoteke ovdje ili klikni za upload (jpg, png, gif, webp, pdf — max 10 MB)</span>
+            </div>
+        </form>
+    }
+    else
+    {
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+            <a href="/login">Prijavi se</a> za upload datoteka.
+        </p>
+    }
+
+    <div id="beer-files-list" class="grid grid-2 stagger">
+        <p style="color: var(--text-muted);">Učitavanje datoteka…</p>
+    </div>
+</section>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.css" />
+    <script src="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
+    <script>
+        (function () {
+            const beerId = @Model.Id;
+            const isAuthenticated = @(User.Identity?.IsAuthenticated == true ? "true" : "false");
+            const currentUserId = @(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+            const isAdmin = @(User.IsInRole("Admin") ? "true" : "false");
+            const listEl = document.getElementById('beer-files-list');
+
+            function formatSize(bytes) {
+                if (bytes >= 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+                if (bytes >= 1024) return (bytes / 1024).toFixed(0) + ' KB';
+                return bytes + ' B';
+            }
+
+            // AJAX popis datoteka
+            async function loadFiles() {
+                try {
+                    const res = await fetch(`/api/beers/${beerId}/photos`);
+                    if (!res.ok) throw new Error(res.status);
+                    const files = await res.json();
+                    renderFiles(files);
+                } catch {
+                    listEl.innerHTML = '<p style="color: var(--danger);">Greška pri učitavanju datoteka.</p>';
+                }
+            }
+
+            function renderFiles(files) {
+                if (!files.length) {
+                    listEl.innerHTML = '<div class="section-empty"><div class="section-empty-icon">🗂️</div><p>Još nema uploadanih datoteka za ovo pivo.</p></div>';
+                    return;
+                }
+                listEl.innerHTML = '';
+                files.forEach(f => {
+                    const isImage = f.contentType && f.contentType.startsWith('image/');
+                    const canDelete = isAuthenticated && (isAdmin || (f.uploadedBy && f.uploadedBy.id === currentUserId));
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div class="card-body" style="display: flex; gap: 1rem; align-items: center;">
+                            ${isImage
+                                ? `<a href="${f.url}" target="_blank"><img src="${f.url}" alt="" style="width: 72px; height: 72px; object-fit: cover; border-radius: 6px;" /></a>`
+                                : `<div style="font-size: 2.5rem;">📄</div>`}
+                            <div style="flex: 1; min-width: 0;">
+                                <a href="${f.url}" target="_blank" style="font-weight: 600; word-break: break-all;"></a>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                    ${formatSize(f.sizeBytes)} · ${new Date(f.uploadedAt).toLocaleDateString('hr-HR')}
+                                    ${f.uploadedBy ? '· @@' + f.uploadedBy.username : ''}
+                                </div>
+                            </div>
+                            ${canDelete ? `<button class="btn btn-sm btn-danger" data-photo-id="${f.id}">Obriši</button>` : ''}
+                        </div>`;
+                    card.querySelector('a[target="_blank"][style]')?.append(f.fileName);
+                    const delBtn = card.querySelector('button[data-photo-id]');
+                    if (delBtn) {
+                        delBtn.addEventListener('click', async () => {
+                            if (!confirm('Obrisati datoteku "' + f.fileName + '"?')) return;
+                            const res = await fetch(`/api/photos/${f.id}`, { method: 'DELETE' });
+                            if (res.ok) loadFiles();
+                            else alert('Brisanje nije uspjelo (' + res.status + ').');
+                        });
+                    }
+                    listEl.appendChild(card);
+                });
+            }
+
+            // Dropzone — asinkroni upload
+            const dzForm = document.getElementById('beer-photo-dropzone');
+            if (dzForm && window.Dropzone) {
+                Dropzone.autoDiscover = false;
+                new Dropzone(dzForm, {
+                    paramName: 'file',
+                    maxFilesize: 10, // MB
+                    acceptedFiles: '.jpg,.jpeg,.png,.gif,.webp,.pdf',
+                    dictDefaultMessage: 'Dovuci datoteke ovdje ili klikni za upload',
+                    init: function () {
+                        this.on('success', function (file) {
+                            setTimeout(() => this.removeFile(file), 1200);
+                            loadFiles();
+                        });
+                        this.on('error', function (file, message) {
+                            const msg = typeof message === 'object' && message.title ? message.title : message;
+                            alert('Upload nije uspio: ' + msg);
+                            this.removeFile(file);
+                        });
+                    }
+                });
+            }
+
+            loadFiles();
+        })();
+    </script>
+}

@@ -1,23 +1,34 @@
 using Cugger.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cugger.Data
 {
-    public class CuggerDbContext : DbContext
+    /// <summary>
+    /// Lab-5: kontekst naslijeđuje IdentityDbContext kako bi ASP.NET Core Identity
+    /// (AppUser + role) živio u istoj bazi kao i domenski entiteti.
+    /// </summary>
+    public class CuggerDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>
     {
         public CuggerDbContext(DbContextOptions<CuggerDbContext> options) : base(options) { }
 
         public DbSet<Brewery> Breweries { get; set; } = null!;
         public DbSet<Beer> Beers { get; set; } = null!;
-        public DbSet<User> Users { get; set; } = null!;
         public DbSet<Venue> Venues { get; set; } = null!;
         public DbSet<CheckIn> CheckIns { get; set; } = null!;
         public DbSet<Review> Reviews { get; set; } = null!;
         public DbSet<Friendship> Friendships { get; set; } = null!;
+        public DbSet<BeerPhoto> BeerPhotos { get; set; } = null!;
+
+        // Napomena: DbSet<AppUser> Users dolazi naslijeđen iz IdentityDbContext.
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Zadrži naziv tablice "Users" iz prethodnih labova (umjesto default "AspNetUsers")
+            modelBuilder.Entity<AppUser>().ToTable("Users");
 
             // Spriječi cascade-delete cikluse koje SQL Server ne voli
             modelBuilder.Entity<CheckIn>()
@@ -68,9 +79,18 @@ namespace Cugger.Data
                 .HasForeignKey(b => b.BreweryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Indexi
-            modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
-            modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
+            // Lab-5: uploadane datoteke vezane uz konkretno pivo
+            modelBuilder.Entity<BeerPhoto>()
+                .HasOne(p => p.Beer)
+                .WithMany(b => b.Photos)
+                .HasForeignKey(p => p.BeerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<BeerPhoto>()
+                .HasOne(p => p.UploadedBy)
+                .WithMany()
+                .HasForeignKey(p => p.UploadedByUserId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             // Seed
             SeedData(modelBuilder);
@@ -105,16 +125,75 @@ namespace Cugger.Data
                 new Venue { Id = 5, Name = "Pivnica Pinta", Address = "Ulica grada Vukovara 269", City = "Zagreb", Country = "Hrvatska", Latitude = 45.798, Longitude = 15.989 }
             );
 
-            // Sentinel vrijednost — Program.cs nakon migracije zamjenjuje ovo s pravim PBKDF2 hashom
-            // za default password "Cugger123!" (jednom kad se baza prvi put kreira).
-            const string seedPasswordHash = "SEED_NEEDS_HASH";
-            const string seedPasswordSalt = "SEED_NEEDS_HASH";
+            // ====== Identity role (lab-5): Admin + Member ======
+            mb.Entity<IdentityRole<int>>().HasData(
+                new IdentityRole<int> { Id = 1, Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = "a0000000-0000-0000-0000-000000000001" },
+                new IdentityRole<int> { Id = 2, Name = "Member", NormalizedName = "MEMBER", ConcurrencyStamp = "a0000000-0000-0000-0000-000000000002" }
+            );
 
-            mb.Entity<User>().HasData(
-                new User { Id = 1, Username = "pivo_lover",     Email = "dragan@example.com", FirstName = "Dragan", LastName = "Marić",  RegistrationDate = new DateTime(2023, 1, 15), Bio = "Apsolvent pivarstva i ljubitelj kvalitetnih piva",   AvatarUrl = "https://ui-avatars.com/api/?name=Dragan+Maric&background=F59E0B&color=fff", PasswordHash = seedPasswordHash, PasswordSalt = seedPasswordSalt, IsEmailConfirmed = true },
-                new User { Id = 2, Username = "hop_king",       Email = "marko@example.com",  FirstName = "Marko",  LastName = "Horvat", RegistrationDate = new DateTime(2023, 3, 20), Bio = "IPA entuzijast, traži nove craft pivovare",          AvatarUrl = "https://ui-avatars.com/api/?name=Marko+Horvat&background=D97706&color=fff", PasswordHash = seedPasswordHash, PasswordSalt = seedPasswordSalt, IsEmailConfirmed = true },
-                new User { Id = 3, Username = "stout_fan",      Email = "ana@example.com",    FirstName = "Ana",    LastName = "Novak",  RegistrationDate = new DateTime(2023, 6, 10), Bio = "Ljubiteljica tamnih piva i europskih pivovara",      AvatarUrl = "https://ui-avatars.com/api/?name=Ana+Novak&background=FCD34D&color=111", PasswordHash = seedPasswordHash, PasswordSalt = seedPasswordSalt, IsEmailConfirmed = true },
-                new User { Id = 4, Username = "craft_explorer", Email = "luka@example.com",   FirstName = "Luka",   LastName = "Kovač",  RegistrationDate = new DateTime(2024, 2, 1),  Bio = "Putujem svijetom u potrazi za savršenim pivom",      AvatarUrl = "https://ui-avatars.com/api/?name=Luka+Kovac&background=A16207&color=fff",  PasswordHash = seedPasswordHash, PasswordSalt = seedPasswordSalt, IsEmailConfirmed = true }
+            // ====== Identity korisnici ======
+            // Sentinel vrijednost — Program.cs nakon migracije zamjenjuje ovo s pravim
+            // Identity hashom za default password "Cugger123!".
+            const string seedPasswordHash = "SEED_NEEDS_HASH";
+
+            mb.Entity<AppUser>().HasData(
+                new AppUser
+                {
+                    Id = 1, UserName = "pivo_lover", NormalizedUserName = "PIVO_LOVER",
+                    Email = "dragan@example.com", NormalizedEmail = "DRAGAN@EXAMPLE.COM", EmailConfirmed = true,
+                    FirstName = "Dragan", LastName = "Marić", RegistrationDate = new DateTime(2023, 1, 15),
+                    Bio = "Apsolvent pivarstva i ljubitelj kvalitetnih piva",
+                    AvatarUrl = "https://ui-avatars.com/api/?name=Dragan+Maric&background=F59E0B&color=fff",
+                    PasswordHash = seedPasswordHash,
+                    SecurityStamp = "b0000000-0000-0000-0000-000000000001",
+                    ConcurrencyStamp = "c0000000-0000-0000-0000-000000000001",
+                    LockoutEnabled = true
+                },
+                new AppUser
+                {
+                    Id = 2, UserName = "hop_king", NormalizedUserName = "HOP_KING",
+                    Email = "marko@example.com", NormalizedEmail = "MARKO@EXAMPLE.COM", EmailConfirmed = true,
+                    FirstName = "Marko", LastName = "Horvat", RegistrationDate = new DateTime(2023, 3, 20),
+                    Bio = "IPA entuzijast, traži nove craft pivovare",
+                    AvatarUrl = "https://ui-avatars.com/api/?name=Marko+Horvat&background=D97706&color=fff",
+                    PasswordHash = seedPasswordHash,
+                    SecurityStamp = "b0000000-0000-0000-0000-000000000002",
+                    ConcurrencyStamp = "c0000000-0000-0000-0000-000000000002",
+                    LockoutEnabled = true
+                },
+                new AppUser
+                {
+                    Id = 3, UserName = "stout_fan", NormalizedUserName = "STOUT_FAN",
+                    Email = "ana@example.com", NormalizedEmail = "ANA@EXAMPLE.COM", EmailConfirmed = true,
+                    FirstName = "Ana", LastName = "Novak", RegistrationDate = new DateTime(2023, 6, 10),
+                    Bio = "Ljubiteljica tamnih piva i europskih pivovara",
+                    AvatarUrl = "https://ui-avatars.com/api/?name=Ana+Novak&background=FCD34D&color=111",
+                    PasswordHash = seedPasswordHash,
+                    SecurityStamp = "b0000000-0000-0000-0000-000000000003",
+                    ConcurrencyStamp = "c0000000-0000-0000-0000-000000000003",
+                    LockoutEnabled = true
+                },
+                new AppUser
+                {
+                    Id = 4, UserName = "craft_explorer", NormalizedUserName = "CRAFT_EXPLORER",
+                    Email = "luka@example.com", NormalizedEmail = "LUKA@EXAMPLE.COM", EmailConfirmed = true,
+                    FirstName = "Luka", LastName = "Kovač", RegistrationDate = new DateTime(2024, 2, 1),
+                    Bio = "Putujem svijetom u potrazi za savršenim pivom",
+                    AvatarUrl = "https://ui-avatars.com/api/?name=Luka+Kovac&background=A16207&color=fff",
+                    PasswordHash = seedPasswordHash,
+                    SecurityStamp = "b0000000-0000-0000-0000-000000000004",
+                    ConcurrencyStamp = "c0000000-0000-0000-0000-000000000004",
+                    LockoutEnabled = true
+                }
+            );
+
+            // pivo_lover je Admin, svi su Member
+            mb.Entity<IdentityUserRole<int>>().HasData(
+                new IdentityUserRole<int> { UserId = 1, RoleId = 1 },
+                new IdentityUserRole<int> { UserId = 1, RoleId = 2 },
+                new IdentityUserRole<int> { UserId = 2, RoleId = 2 },
+                new IdentityUserRole<int> { UserId = 3, RoleId = 2 },
+                new IdentityUserRole<int> { UserId = 4, RoleId = 2 }
             );
 
             mb.Entity<CheckIn>().HasData(

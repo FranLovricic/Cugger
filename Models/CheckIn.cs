@@ -28,7 +28,7 @@ namespace Cugger.Models
 
         public DateTime CreatedAt { get; set; }
 
-        public virtual User? User { get; set; }
+        public virtual AppUser? User { get; set; }
         public virtual Beer? Beer { get; set; }
         public virtual Venue? Venue { get; set; }
     }

@@ -1,25 +1,28 @@
 using System.Security.Claims;
-using Cugger.Data;
 using Cugger.Models;
 using Cugger.Models.ViewModels;
-using Cugger.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Cugger.Controllers
 {
+    /// <summary>
+    /// Lab-5: autentikacija prebačena na ASP.NET Core Identity
+    /// (UserManager / SignInManager) + Google external login.
+    /// Rute i view-ovi ostali su isti kao u prethodnim labovima.
+    /// </summary>
     public class AccountController : Controller
     {
-        private readonly CuggerDbContext _db;
-        private readonly PasswordService _passwords;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public AccountController(CuggerDbContext db, PasswordService passwords)
+        public AccountController(
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager)
         {
-            _db = db;
-            _passwords = passwords;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // ========== REGISTER ==========
@@ -49,44 +52,43 @@ namespace Cugger.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var usernameExists = await _db.Users.AnyAsync(u => u.Username == model.Username);
-            if (usernameExists)
+            if (await _userManager.FindByNameAsync(model.Username.Trim()) != null)
                 ModelState.AddModelError(nameof(model.Username), "To korisničko ime je već zauzeto.");
 
-            var emailExists = await _db.Users.AnyAsync(u => u.Email == model.Email);
-            if (emailExists)
+            if (await _userManager.FindByEmailAsync(model.Email.Trim()) != null)
                 ModelState.AddModelError(nameof(model.Email), "Email je već registriran.");
 
             if (!ModelState.IsValid)
                 return View(model);
 
-            var (hash, salt) = _passwords.HashPassword(model.Password);
-
-            var user = new User
+            var user = new AppUser
             {
-                Username = model.Username.Trim(),
+                UserName = model.Username.Trim(),
                 Email = model.Email.Trim().ToLowerInvariant(),
                 FirstName = model.FirstName.Trim(),
                 LastName = model.LastName.Trim(),
                 RegistrationDate = DateTime.UtcNow,
                 Bio = string.Empty,
-                AvatarUrl = $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(model.FirstName + "+" + model.LastName)}&background=F59E0B&color=111",
-                PasswordHash = hash,
-                PasswordSalt = salt,
-                IsEmailConfirmed = false,
-                EmailConfirmationToken = _passwords.GenerateResetToken(),
-                EmailConfirmationTokenExpiresAt = DateTime.UtcNow.AddDays(7)
+                AvatarUrl = $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(model.FirstName + "+" + model.LastName)}&background=F59E0B&color=111"
             };
 
-            _db.Users.Add(user);
-            await _db.SaveChangesAsync();
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+                return View(model);
+            }
+
+            await _userManager.AddToRoleAsync(user, "Member");
 
             // Demo mode: prikazujemo confirmation link na confirmation pending stranici
             // (u produkciji bi se ovaj link slao emailom).
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var confirmationLink = Url.Action(
                 nameof(ConfirmEmail),
                 "Account",
-                new { token = user.EmailConfirmationToken, email = user.Email },
+                new { token, email = user.Email },
                 Request.Scheme);
 
             TempData["ConfirmationLink"] = confirmationLink;
@@ -123,25 +125,21 @@ namespace Cugger.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
-            var normalized = email.Trim().ToLowerInvariant();
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == normalized);
-
-            if (user == null
-                || string.IsNullOrEmpty(user.EmailConfirmationToken)
-                || user.EmailConfirmationToken != token
-                || user.EmailConfirmationTokenExpiresAt == null
-                || user.EmailConfirmationTokenExpiresAt < DateTime.UtcNow)
+            var user = await _userManager.FindByEmailAsync(email.Trim());
+            if (user == null)
             {
                 TempData["Error"] = "Link za potvrdu je istekao ili nije važeći.";
                 return RedirectToAction(nameof(Login));
             }
 
-            user.IsEmailConfirmed = true;
-            user.EmailConfirmationToken = null;
-            user.EmailConfirmationTokenExpiresAt = null;
-            await _db.SaveChangesAsync();
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                TempData["Error"] = "Link za potvrdu je istekao ili nije važeći.";
+                return RedirectToAction(nameof(Login));
+            }
 
-            await SignInAsync(user, rememberMe: false);
+            await _signInManager.SignInAsync(user, isPersistent: false);
 
             TempData["Success"] = $"Email potvrđen. Dobrodošao, {user.FirstName}! 🍻";
             return RedirectToAction("Index", "Home");
@@ -174,17 +172,20 @@ namespace Cugger.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var key = model.UsernameOrEmail.Trim().ToLowerInvariant();
-            var user = await _db.Users
-                .FirstOrDefaultAsync(u => u.Username.ToLower() == key || u.Email.ToLower() == key);
+            var key = model.UsernameOrEmail.Trim();
+            var user = await _userManager.FindByNameAsync(key)
+                       ?? await _userManager.FindByEmailAsync(key);
 
-            if (user == null || !_passwords.VerifyPassword(model.Password, user.PasswordHash, user.PasswordSalt))
+            if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "Neispravno korisničko ime/email ili lozinka.");
                 return View(model);
             }
 
-            if (!user.IsEmailConfirmed)
+            var result = await _signInManager.PasswordSignInAsync(
+                user, model.Password, model.RememberMe, lockoutOnFailure: true);
+
+            if (result.IsNotAllowed)
             {
                 ModelState.AddModelError(string.Empty,
                     "Email nije potvrđen. Provjeri svoju e-poštu (ili klikni na 'Pošalji ponovno' niže).");
@@ -192,7 +193,17 @@ namespace Cugger.Controllers
                 return View(model);
             }
 
-            await SignInAsync(user, model.RememberMe);
+            if (result.IsLockedOut)
+            {
+                ModelState.AddModelError(string.Empty, "Račun je privremeno zaključan zbog previše neuspjelih pokušaja.");
+                return View(model);
+            }
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "Neispravno korisničko ime/email ili lozinka.");
+                return View(model);
+            }
 
             if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                 return Redirect(model.ReturnUrl);
@@ -210,19 +221,14 @@ namespace Cugger.Controllers
             if (string.IsNullOrEmpty(email))
                 return RedirectToAction(nameof(Login));
 
-            var normalized = email.Trim().ToLowerInvariant();
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == normalized);
-
-            if (user != null && !user.IsEmailConfirmed)
+            var user = await _userManager.FindByEmailAsync(email.Trim());
+            if (user != null && !user.EmailConfirmed)
             {
-                user.EmailConfirmationToken = _passwords.GenerateResetToken();
-                user.EmailConfirmationTokenExpiresAt = DateTime.UtcNow.AddDays(7);
-                await _db.SaveChangesAsync();
-
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var link = Url.Action(
                     nameof(ConfirmEmail),
                     "Account",
-                    new { token = user.EmailConfirmationToken, email = user.Email },
+                    new { token, email = user.Email },
                     Request.Scheme);
 
                 TempData["ConfirmationLink"] = link;
@@ -230,6 +236,93 @@ namespace Cugger.Controllers
             }
 
             return RedirectToAction(nameof(RegisterPending));
+        }
+
+        // ========== EXTERNAL LOGIN (Google) — lab-5 ==========
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        [Route("external-login")]
+        public IActionResult ExternalLogin(string provider, string? returnUrl = null)
+        {
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return Challenge(properties, provider);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("external-login/callback")]
+        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
+        {
+            if (remoteError != null)
+            {
+                TempData["Error"] = $"Vanjski pružatelj prijave je vratio grešku: {remoteError}";
+                return RedirectToAction(nameof(Login));
+            }
+
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                TempData["Error"] = "Greška pri dohvaćanju podataka o vanjskoj prijavi.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            // 1) Korisnik već ima povezan vanjski login → prijavi ga
+            var signInResult = await _signInManager.ExternalLoginSignInAsync(
+                info.LoginProvider, info.ProviderKey, isPersistent: true, bypassTwoFactor: true);
+
+            if (signInResult.Succeeded)
+            {
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    return Redirect(returnUrl);
+                return RedirectToAction("Index", "Home");
+            }
+
+            // 2) Nema povezanog logina → pronađi po emailu ili kreiraj novi račun
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrEmpty(email))
+            {
+                TempData["Error"] = $"{info.ProviderDisplayName} nije vratio email adresu.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                var firstName = info.Principal.FindFirstValue(ClaimTypes.GivenName) ?? "Cugger";
+                var lastName = info.Principal.FindFirstValue(ClaimTypes.Surname) ?? "Korisnik";
+
+                user = new AppUser
+                {
+                    UserName = await GenerateUniqueUsernameAsync(email),
+                    Email = email.ToLowerInvariant(),
+                    EmailConfirmed = true, // email dolazi verificiran od Googlea
+                    FirstName = firstName,
+                    LastName = lastName,
+                    RegistrationDate = DateTime.UtcNow,
+                    Bio = string.Empty,
+                    AvatarUrl = $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(firstName + "+" + lastName)}&background=F59E0B&color=111"
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    TempData["Error"] = "Neuspjelo kreiranje računa iz vanjske prijave.";
+                    return RedirectToAction(nameof(Login));
+                }
+
+                await _userManager.AddToRoleAsync(user, "Member");
+            }
+
+            await _userManager.AddLoginAsync(user, info);
+            await _signInManager.SignInAsync(user, isPersistent: true);
+
+            TempData["Success"] = $"Bok, {user.FirstName}! 🍺 (prijava putem {info.ProviderDisplayName})";
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+            return RedirectToAction("Index", "Home");
         }
 
         // ========== LOGOUT ==========
@@ -240,7 +333,7 @@ namespace Cugger.Controllers
         [Route("logout")]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await _signInManager.SignOutAsync();
             TempData["Success"] = "Vidimo se uskoro. 👋";
             return RedirectToAction("Index", "Home");
         }
@@ -269,19 +362,14 @@ namespace Cugger.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var email = model.Email.Trim().ToLowerInvariant();
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email);
-
+            var user = await _userManager.FindByEmailAsync(model.Email.Trim());
             if (user != null)
             {
-                user.PasswordResetToken = _passwords.GenerateResetToken();
-                user.PasswordResetTokenExpiresAt = DateTime.UtcNow.AddHours(2);
-                await _db.SaveChangesAsync();
-
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var resetLink = Url.Action(
                     nameof(ResetPassword),
                     "Account",
-                    new { token = user.PasswordResetToken, email = user.Email },
+                    new { token, email = user.Email },
                     Request.Scheme);
 
                 TempData["ResetLink"] = resetLink;
@@ -337,25 +425,19 @@ namespace Cugger.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var email = model.Email.Trim().ToLowerInvariant();
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email);
-
-            if (user == null
-                || string.IsNullOrEmpty(user.PasswordResetToken)
-                || user.PasswordResetToken != model.Token
-                || user.PasswordResetTokenExpiresAt == null
-                || user.PasswordResetTokenExpiresAt < DateTime.UtcNow)
+            var user = await _userManager.FindByEmailAsync(model.Email.Trim());
+            if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "Token je istekao ili nije važeći. Zatraži novi reset link.");
                 return View(model);
             }
 
-            var (hash, salt) = _passwords.HashPassword(model.Password);
-            user.PasswordHash = hash;
-            user.PasswordSalt = salt;
-            user.PasswordResetToken = null;
-            user.PasswordResetTokenExpiresAt = null;
-            await _db.SaveChangesAsync();
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "Token je istekao ili nije važeći. Zatraži novi reset link.");
+                return View(model);
+            }
 
             TempData["Success"] = "Lozinka je promijenjena. Možeš se prijaviti.";
             return RedirectToAction(nameof(Login));
@@ -370,31 +452,20 @@ namespace Cugger.Controllers
 
         // ========== Helpers ==========
 
-        private async Task SignInAsync(User user, bool rememberMe)
+        private async Task<string> GenerateUniqueUsernameAsync(string email)
         {
-            var claims = new List<Claim>
+            var baseName = new string(email.Split('@')[0]
+                .Where(c => char.IsLetterOrDigit(c) || c is '_' or '.' or '-')
+                .ToArray());
+            if (string.IsNullOrEmpty(baseName)) baseName = "cugger_user";
+
+            var candidate = baseName;
+            var i = 1;
+            while (await _userManager.FindByNameAsync(candidate) != null)
             {
-                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new(ClaimTypes.Name, user.Username),
-                new(ClaimTypes.Email, user.Email),
-                new(ClaimTypes.GivenName, user.FirstName),
-                new(ClaimTypes.Surname, user.LastName),
-                new("AvatarUrl", user.AvatarUrl ?? string.Empty)
-            };
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-
-            var props = new AuthenticationProperties
-            {
-                IsPersistent = rememberMe,
-                ExpiresUtc = rememberMe ? DateTimeOffset.UtcNow.AddDays(30) : null
-            };
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                principal,
-                props);
+                candidate = $"{baseName}{i++}";
+            }
+            return candidate;
         }
     }
 }

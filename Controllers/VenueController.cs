@@ -1,4 +1,4 @@
-using Cugger.Data;
+﻿using Cugger.Data;
 using Cugger.Models;
 using Cugger.Models.ViewModels;
 using Cugger.Repositories;
@@ -51,7 +51,7 @@ namespace Cugger.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewBag.Breadcrumbs = new[]
@@ -64,7 +64,7 @@ namespace Cugger.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateVenueViewModel model)
         {
@@ -91,7 +91,7 @@ namespace Cugger.Controllers
         // ====== Edit ======
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             var venue = _venueRepo.GetById(id);
@@ -120,7 +120,7 @@ namespace Cugger.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CreateVenueViewModel model)
         {
@@ -149,7 +149,7 @@ namespace Cugger.Controllers
         // ====== Delete ======
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {

@@ -1,4 +1,4 @@
-@model Venue
+﻿@model Venue
 
 @{
     ViewData["Title"] = $"{Model?.Name} - Lokacija";
@@ -28,7 +28,7 @@
         </div>
         <div class="header-actions">
             <a href="/Venue" class="btn btn-secondary">← Nazad</a>
-            @if (User.Identity?.IsAuthenticated == true)
+            @if (User.IsInRole("Admin"))
             {
                 <a href="/Venue/Edit/@Model.Id" class="btn btn-ghost">Uredi</a>
                 <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;"

@@ -1,12 +1,13 @@
 using Cugger.Data;
+using Cugger.Models;
 using Cugger.Repositories;
 using Cugger.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// MVC
+// MVC + API
 builder.Services.AddControllersWithViews();
 
 // ========== EF CORE - DbContext + Provider ==========
@@ -43,34 +44,88 @@ builder.Services.AddScoped<CheckInRepository>();
 builder.Services.AddScoped<ReviewRepository>();
 builder.Services.AddScoped<FriendshipRepository>();
 
-// ========== Auth ==========
-builder.Services.AddSingleton<PasswordService>();
-
+// ========== Auth: ASP.NET Core Identity (lab-5) ==========
 builder.Services
-    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+    .AddIdentity<AppUser, IdentityRole<int>>(options =>
     {
-        options.Cookie.Name = "cugger.auth";
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SameSite = SameSiteMode.Lax;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-        options.LoginPath = "/login";
-        options.LogoutPath = "/logout";
-        options.AccessDeniedPath = "/access-denied";
-        options.ExpireTimeSpan = TimeSpan.FromDays(14);
-        options.SlidingExpiration = true;
+        // Pravila usklađena s validacijom na Register formi (min 8 znakova)
+        options.Password.RequiredLength = 8;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+
+        options.User.RequireUniqueEmail = true;
+        options.SignIn.RequireConfirmedEmail = true;
+
+        options.Lockout.MaxFailedAccessAttempts = 10;
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    })
+    .AddEntityFrameworkStores<CuggerDbContext>()
+    .AddDefaultTokenProviders();
+
+// Dodatni claimovi (ime, prezime, avatar) u auth cookie
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<AppUser>, CuggerClaimsPrincipalFactory>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "cugger.auth";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    options.LoginPath = "/login";
+    options.LogoutPath = "/logout";
+    options.AccessDeniedPath = "/access-denied";
+    options.ExpireTimeSpan = TimeSpan.FromDays(14);
+    options.SlidingExpiration = true;
+
+    // API klijenti ne žele redirect na login stranicu nego ispravan statusni kod
+    options.Events.OnRedirectToLogin = ctx =>
+    {
+        if (ctx.Request.Path.StartsWithSegments("/api"))
+        {
+            ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.CompletedTask;
+        }
+        ctx.Response.Redirect(ctx.RedirectUri);
+        return Task.CompletedTask;
+    };
+    options.Events.OnRedirectToAccessDenied = ctx =>
+    {
+        if (ctx.Request.Path.StartsWithSegments("/api"))
+        {
+            ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
+            return Task.CompletedTask;
+        }
+        ctx.Response.Redirect(ctx.RedirectUri);
+        return Task.CompletedTask;
+    };
+});
+
+// ========== 3rd party autentikacija: Google (lab-5) ==========
+// Registrira se samo ako su client id/secret konfigurirani
+// (appsettings.json / user-secrets / env varijable).
+var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
+var googleClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(googleClientSecret))
+{
+    builder.Services.AddAuthentication().AddGoogle(options =>
+    {
+        options.ClientId = googleClientId;
+        options.ClientSecret = googleClientSecret;
+        // default CallbackPath = /signin-google
     });
+}
 
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-// ========== Auto-migrate (or EnsureCreated fallback) ==========
+// ========== Auto-migrate (or EnsureCreated fallback) + Identity seed ==========
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CuggerDbContext>();
-    var passwords = scope.ServiceProvider.GetRequiredService<PasswordService>();
     try
     {
         db.Database.Migrate();
@@ -82,19 +137,38 @@ using (var scope = app.Services.CreateScope())
         db.Database.EnsureCreated();
     }
 
-    // Zamijeni sentinel vrijednosti seed korisnika s pravim PBKDF2 hash-em za "Cugger123!"
-    var seedUsers = db.Users.Where(u => u.PasswordHash == "SEED_NEEDS_HASH").ToList();
-    if (seedUsers.Count > 0)
+    // Osiguraj da seed/demo korisnici imaju valjani Identity hash za "Cugger123!".
+    // Pokriva i sentinel ("SEED_NEEDS_HASH") i stari PBKDF2 format iz lab-3
+    // (baza migrirana s custom autha na Identity).
+    var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<AppUser>>();
+    var seedUsernames = new[] { "pivo_lover", "hop_king", "stout_fan", "craft_explorer" };
+    var seedUsers = db.Users.Where(u => seedUsernames.Contains(u.UserName!)).ToList();
+    const string defaultPassword = "Cugger123!";
+    var rehashed = 0;
+    foreach (var u in seedUsers)
     {
-        const string defaultPassword = "Cugger123!";
-        foreach (var u in seedUsers)
+        bool needsRehash;
+        try
         {
-            var (hash, salt) = passwords.HashPassword(defaultPassword);
-            u.PasswordHash = hash;
-            u.PasswordSalt = salt;
+            needsRehash = string.IsNullOrEmpty(u.PasswordHash)
+                || u.PasswordHash == "SEED_NEEDS_HASH"
+                || hasher.VerifyHashedPassword(u, u.PasswordHash, defaultPassword) == PasswordVerificationResult.Failed;
         }
+        catch (FormatException)
+        {
+            needsRehash = true; // stari hash nije valjani Identity format
+        }
+
+        if (needsRehash)
+        {
+            u.PasswordHash = hasher.HashPassword(u, defaultPassword);
+            rehashed++;
+        }
+    }
+    if (rehashed > 0)
+    {
         db.SaveChanges();
-        Console.WriteLine($"[Cugger] Seed passwords initialized for {seedUsers.Count} users (default: '{defaultPassword}').");
+        Console.WriteLine($"[Cugger] Seed passwords initialized for {rehashed} users (default: '{defaultPassword}').");
     }
 }
 
@@ -144,4 +218,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// Attribute-routed API controlleri (lab-5)
+app.MapControllers();
+
 app.Run();
+
+// Marker za WebApplicationFactory<Program> u integracijskim testovima (lab-5)
+public partial class Program { }

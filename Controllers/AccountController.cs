@@ -16,13 +16,16 @@ namespace Cugger.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly ILogger<AccountController> _logger;
 
         public AccountController(
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager)
+            SignInManager<AppUser> signInManager,
+            ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _logger = logger;
         }
 
         // ========== REGISTER ==========
@@ -195,15 +198,19 @@ namespace Cugger.Controllers
 
             if (result.IsLockedOut)
             {
+                _logger.LogWarning("Login: račun {Username} zaključan zbog previše neuspjelih pokušaja", user.UserName);
                 ModelState.AddModelError(string.Empty, "Račun je privremeno zaključan zbog previše neuspjelih pokušaja.");
                 return View(model);
             }
 
             if (!result.Succeeded)
             {
+                _logger.LogWarning("Login: neuspješan pokušaj prijave za {Username}", user.UserName);
                 ModelState.AddModelError(string.Empty, "Neispravno korisničko ime/email ili lozinka.");
                 return View(model);
             }
+
+            _logger.LogInformation("Login: korisnik {Username} se prijavio", user.UserName);
 
             if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                 return Redirect(model.ReturnUrl);

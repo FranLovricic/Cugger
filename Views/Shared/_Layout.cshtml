@@ -27,7 +27,12 @@
             <a href="/" class="navbar-brand">
                 🍺 Cugger
             </a>
-            <ul class="navbar-menu">
+            <button type="button" id="navbar-toggle" class="navbar-toggle" aria-label="Otvori izbornik" aria-expanded="false" aria-controls="navbar-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="navbar-menu" id="navbar-menu">
                 <li>
                     <a href="/" class="@(currentController == "Home" ? "active" : "")">Početna</a>
                 </li>
@@ -47,11 +52,14 @@
                     <a href="/User" class="@(currentController == "User" ? "active" : "")">Korisnici</a>
                 </li>
                 <li>
-                    <a href="/pretraga" class="navbar-search-icon" title="Pretraga">🔍</a>
+                    <button type="button" id="global-search-toggle" class="navbar-search-icon" title="Globalna pretraga (Ctrl+K)" aria-label="Globalna pretraga">🔍</button>
                 </li>
 
                 @if (isAuth)
                 {
+                    <li>
+                        <a href="/ai" class="@(currentController == "Ai" ? "active" : "")" title="AI unos podataka">🤖 AI</a>
+                    </li>
                     <li>
                         <a href="/CheckIn/Create" class="navbar-register" title="Novi check-in">+ Check-in</a>
                     </li>
@@ -183,8 +191,28 @@
         <a href="/CheckIn/Create" class="fab-checkin" title="Novi check-in" aria-label="Novi check-in">+</a>
     }
 
+    <!-- GLOBAL SEARCH (command palette) -->
+    <div id="global-search-overlay" class="gs-overlay" role="dialog" aria-modal="true" aria-label="Globalna pretraga">
+        <div class="gs-panel">
+            <div class="gs-input-wrap">
+                <span class="gs-input-icon">🔍</span>
+                <input type="text" id="global-search-input" class="gs-input"
+                       placeholder="Pretraži stranice, piva, pivovare, lokale, korisnike..."
+                       autocomplete="off" spellcheck="false" />
+                <kbd class="gs-kbd">Esc</kbd>
+            </div>
+            <div id="global-search-results" class="gs-results"></div>
+            <div class="gs-hints">
+                <span><kbd>↑</kbd><kbd>↓</kbd> navigacija</span>
+                <span><kbd>Enter</kbd> otvori</span>
+                <span><kbd>Ctrl</kbd>+<kbd>K</kbd> otvori/zatvori</span>
+            </div>
+        </div>
+    </div>
+
     <script src="~/js/site.js"></script>
     <script src="~/js/cugger-controls.js"></script>
+    <script src="~/js/global-search.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

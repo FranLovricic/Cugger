@@ -101,6 +101,31 @@
     });
   }
 
+  // ── Mobile hamburger menu ──
+  function initMobileNav() {
+    var toggle = document.getElementById('navbar-toggle');
+    var menu = document.getElementById('navbar-menu');
+    if (!toggle || !menu) return;
+
+    function setOpen(open) {
+      menu.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Zatvori izbornik' : 'Otvori izbornik');
+    }
+
+    toggle.addEventListener('click', function () {
+      setOpen(!menu.classList.contains('open'));
+    });
+
+    // Zatvori nakon odabira stavke ili povratka na desktop širinu
+    menu.addEventListener('click', function (e) {
+      if (e.target.closest('a, button')) setOpen(false);
+    });
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 900) setOpen(false);
+    });
+  }
+
   // ── Init ──
   document.addEventListener('DOMContentLoaded', function () {
     initScrollReveal();
@@ -108,5 +133,6 @@
     initCounters();
     initCardTilt();
     initMarquee();
+    initMobileNav();
   });
 })();

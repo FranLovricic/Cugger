@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "AI unos - Cugger";
+    var isConfigured = (bool)(ViewBag.IsConfigured ?? false);
+    var isAdmin = (bool)(ViewBag.IsAdmin ?? false);
+}
+
+<div class="auth-wrap" style="align-items: flex-start;">
+    <div class="auth-card reveal" style="max-width: 720px;">
+        <div class="section-label">AI integracija</div>
+        <h1 class="auth-title">AI unos 🤖</h1>
+        <p class="auth-subtitle">
+            Opiši prirodnim jezikom što želiš unijeti — AI će prijedlog pretvoriti u strukturirani zapis,
+            a ti ga potvrdi prije spremanja.
+        </p>
+
+        @if (!isConfigured)
+        {
+            <div class="toast toast-error" style="animation: none; margin-bottom: 1.5rem;">
+                ⚠️ AI nije konfiguriran. Postavi <code>Anthropic:ApiKey</code> u <code>appsettings.json</code>
+                ili <code>ANTHROPIC_API_KEY</code> varijablu okoline, pa ponovno pokreni aplikaciju.
+            </div>
+        }
+
+        <div class="form-row">
+            <label class="form-label" for="ai-prompt">Tvoj upit</label>
+            <textarea id="ai-prompt" class="form-input" rows="3"
+                      placeholder="npr. Popio sam Guinness u Pivnici Medvedgrad, ocjena 4.5, savršen stout"></textarea>
+        </div>
+
+        <div class="ai-examples">
+            <span class="ai-examples-label">Primjeri:</span>
+            @if (isAdmin)
+            {
+                <button type="button" class="ai-example">Dodaj pivo Ožujsko, lager s 5.2% alkohola iz Zagrebačke pivovare</button>
+                <button type="button" class="ai-example">Nova pivovara: Varionica iz Pazina, Hrvatska, osnovana 2014.</button>
+            }
+            <button type="button" class="ai-example">Check-in: pijem IPA-u u pubu, četvorka, jako hmeljasto</button>
+            <button type="button" class="ai-example">Recenzija za Guinness: 5/5, najbolji stout ikad</button>
+        </div>
+
+        <button type="button" id="ai-submit" class="btn btn-primary" style="width: 100%;" @(isConfigured ? "" : "disabled")>
+            ✨ Parsiraj upit
+        </button>
+
+        <div id="ai-status" class="ai-status" hidden></div>
+
+        <div id="ai-preview" class="ai-preview" hidden>
+            <div class="ai-preview-title">Prijedlog unosa</div>
+            <div id="ai-preview-message" class="ai-preview-message"></div>
+            <table class="ai-preview-table" id="ai-preview-table"></table>
+            <div id="ai-preview-problems" class="ai-preview-problems"></div>
+            <div class="ai-preview-actions">
+                <button type="button" id="ai-confirm" class="btn btn-primary">✅ Potvrdi i spremi</button>
+                <button type="button" id="ai-cancel" class="btn btn-ghost">Odbaci</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/ai-entry.js"></script>
+}

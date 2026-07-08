@@ -4,8 +4,26 @@ using Cugger.Repositories;
 using Cugger.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
+
+// ========== LOGGING: Serilog (konzola + rolling file u logs/) ==========
+// Početni logger — hvata greške i prije nego što je host konfiguriran.
+// Namjerno NE koristimo CreateBootstrapLogger(): njegov Freeze() dopušta samo
+// jedan host po procesu, a integracijski testovi (WebApplicationFactory) grade više njih.
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Puna konfiguracija se čita iz appsettings.json ("Serilog" sekcija)
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext());
 
 // MVC + API
 builder.Services.AddControllersWithViews();
@@ -43,6 +61,15 @@ builder.Services.AddScoped<VenueRepository>();
 builder.Services.AddScoped<CheckInRepository>();
 builder.Services.AddScoped<ReviewRepository>();
 builder.Services.AddScoped<FriendshipRepository>();
+
+// ========== AI integracija: unos podataka prirodnim jezikom (Claude API) ==========
+builder.Services.AddScoped<AiEntryService>();
+
+// ========== MCP server (Model Context Protocol) — pristup kroz agentic IDE ==========
+// HTTP endpoint /mcp s alatima nad Cugger podacima (search_beers, get_feed, ...)
+builder.Services.AddMcpServer()
+    .WithHttpTransport()
+    .WithTools<CuggerMcpTools>();
 
 // ========== Auth: ASP.NET Core Identity (lab-5) ==========
 builder.Services
@@ -129,11 +156,11 @@ using (var scope = app.Services.CreateScope())
     try
     {
         db.Database.Migrate();
-        Console.WriteLine("[Cugger] Database migrated successfully.");
+        Log.Information("[Cugger] Database migrated successfully.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[Cugger] Migrate() failed ({ex.Message}). Falling back to EnsureCreated().");
+        Log.Warning(ex, "[Cugger] Migrate() failed ({Message}). Falling back to EnsureCreated().", ex.Message);
         db.Database.EnsureCreated();
     }
 
@@ -168,7 +195,7 @@ using (var scope = app.Services.CreateScope())
     if (rehashed > 0)
     {
         db.SaveChanges();
-        Console.WriteLine($"[Cugger] Seed passwords initialized for {rehashed} users (default: '{defaultPassword}').");
+        Log.Information("[Cugger] Seed passwords initialized for {Count} users (default: '{DefaultPassword}').", rehashed, defaultPassword);
     }
 }
 
@@ -179,7 +206,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// Serilog request logging — jedan strukturirani zapis po HTTP zahtjevu (metoda, path, status, trajanje)
+app.UseSerilogRequestLogging();
+
+// HTTPS redirect — osim za /mcp (MCP klijenti se spajaju na čisti HTTP bez praćenja redirecta)
+app.UseWhen(
+    ctx => !ctx.Request.Path.StartsWithSegments("/mcp"),
+    branch => branch.UseHttpsRedirection());
 app.UseStaticFiles();
 app.UseRouting();
 
@@ -221,7 +254,23 @@ app.MapControllerRoute(
 // Attribute-routed API controlleri (lab-5)
 app.MapControllers();
 
-app.Run();
+// MCP endpoint — agentic IDE-i se spajaju na /mcp (Streamable HTTP transport)
+app.MapMcp("/mcp");
+
+try
+{
+    Log.Information("[Cugger] Starting web application");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "[Cugger] Application terminated unexpectedly");
+    throw;
+}
+finally
+{
+    Log.CloseAndFlush();
+}
 
 // Marker za WebApplicationFactory<Program> u integracijskim testovima (lab-5)
 public partial class Program { }

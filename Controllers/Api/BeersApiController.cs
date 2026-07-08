@@ -17,10 +17,12 @@ namespace Cugger.Controllers.Api
     public class BeersApiController : ControllerBase
     {
         private readonly CuggerDbContext _db;
+        private readonly ILogger<BeersApiController> _logger;
 
-        public BeersApiController(CuggerDbContext db)
+        public BeersApiController(CuggerDbContext db, ILogger<BeersApiController> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
         /// <summary>GET api/beers — svi zapisi uz pretragu (q), filtere (style, breweryId) i paging.</summary>
@@ -122,6 +124,7 @@ namespace Cugger.Controllers.Api
             await _db.SaveChangesAsync();
             await _db.Entry(beer).Reference(b => b.Brewery).LoadAsync();
 
+            _logger.LogInformation("Pivo kreirano: {BeerName} (ID {BeerId}) od korisnika {User}", beer.Name, beer.Id, User.Identity?.Name);
             return CreatedAtAction(nameof(GetById), new { id = beer.Id }, beer.ToDto());
         }
 
@@ -149,6 +152,7 @@ namespace Cugger.Controllers.Api
             beer.BreweryId = input.BreweryId;
 
             await _db.SaveChangesAsync();
+            _logger.LogInformation("Pivo ažurirano: {BeerName} (ID {BeerId}) od korisnika {User}", beer.Name, beer.Id, User.Identity?.Name);
             return NoContent();
         }
 
@@ -173,6 +177,7 @@ namespace Cugger.Controllers.Api
 
             _db.Beers.Remove(beer);
             await _db.SaveChangesAsync();
+            _logger.LogInformation("Pivo obrisano: {BeerName} (ID {BeerId}) od korisnika {User}", beer.Name, beer.Id, User.Identity?.Name);
             return NoContent();
         }
     }

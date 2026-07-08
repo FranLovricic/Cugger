@@ -30,8 +30,11 @@ namespace Cugger.Models
         /// <summary>
         /// Kompatibilnosni alias za starije dijelove aplikacije (lab 1-4)
         /// koji koriste "Username" umjesto Identity konvencije "UserName".
+        /// JsonIgnore: uz case-insensitive JSON opcije "Username" i "UserName"
+        /// kolidiraju pri izgradnji serializacijskih metapodataka.
         /// </summary>
         [NotMapped]
+        [System.Text.Json.Serialization.JsonIgnore]
         public string Username
         {
             get => UserName ?? string.Empty;

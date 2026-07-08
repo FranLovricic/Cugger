@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "cugger": {
+      "type": "http",
+      "url": "http://localhost:5017/mcp"
+    }
+  }
+}

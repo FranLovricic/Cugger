@@ -22,7 +22,13 @@
       "Bash(curl -s -c c.txt http://localhost:5017/login -o login.html)",
       "Bash(curl -s http://localhost:5017/Beer)",
       "Bash(curl -s \"http://localhost:5017/api/search/beers\")",
-      "PowerShell(dotnet --version)"
+      "PowerShell(dotnet --version)",
+      "Bash(dotnet --version)",
+      "Bash(npm --version)",
+      "Bash(dotnet add *)",
+      "Skill(claude-api)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5017/)",
+      "Bash(curl -s \"http://localhost:5017/api/search/global?q=ipa\")"
     ]
   }
 }

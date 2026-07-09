@@ -33,19 +33,7 @@ var dbProvider = builder.Configuration["Database:Provider"] ?? "Sqlite";
 
 builder.Services.AddDbContext<CuggerDbContext>(options =>
 {
-    if (string.Equals(dbProvider, "SqlServer", StringComparison.OrdinalIgnoreCase))
-    {
-        var conn = builder.Configuration.GetConnectionString("SqlServer")
-                   ?? throw new InvalidOperationException("Missing 'SqlServer' connection string.");
-        options.UseSqlServer(conn);
-    }
-    else if (string.Equals(dbProvider, "SqlServerDocker", StringComparison.OrdinalIgnoreCase))
-    {
-        var conn = builder.Configuration.GetConnectionString("SqlServerDocker")
-                   ?? throw new InvalidOperationException("Missing 'SqlServerDocker' connection string.");
-        options.UseSqlServer(conn);
-    }
-    else if (string.Equals(dbProvider, "MySql", StringComparison.OrdinalIgnoreCase))
+    if (string.Equals(dbProvider, "MySql", StringComparison.OrdinalIgnoreCase))
     {
         var conn = builder.Configuration.GetConnectionString("MySql")
                 ?? throw new InvalidOperationException("Missing 'MySql' connection string.");
@@ -57,7 +45,8 @@ builder.Services.AddDbContext<CuggerDbContext>(options =>
     else
     {
         var conn = builder.Configuration.GetConnectionString("Sqlite")
-                   ?? "Data Source=cugger.db";
+                ?? "Data Source=cugger.db";
+
         options.UseSqlite(conn);
     }
 });
@@ -169,8 +158,8 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        Log.Warning(ex, "[Cugger] Migrate() failed ({Message}). Falling back to EnsureCreated().", ex.Message);
-        db.Database.EnsureCreated();
+        Log.Fatal(ex, "Database migration failed");
+        throw;
     }
 
     // Osiguraj da seed/demo korisnici imaju valjani Identity hash za "Cugger123!".

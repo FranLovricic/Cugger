@@ -3,6 +3,7 @@ using System;
 using Cugger.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -15,83 +16,89 @@ namespace Cugger.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.9");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("Cugger.Models.AppUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("AvatarUrl")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("Bio")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(80)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(80)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(80)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(80)");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("RegistrationDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
@@ -195,34 +202,36 @@ namespace Cugger.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
-                    b.Property<double>("ABV")
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("ABV")
                         .HasColumnType("decimal(4,2)");
 
                     b.Property<int>("BreweryId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(2000)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(2000)");
 
                     b.Property<int>("IBU")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(150)");
 
                     b.Property<int>("Style")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -234,7 +243,7 @@ namespace Cugger.Migrations
                         new
                         {
                             Id = 1,
-                            ABV = 5.0999999999999996,
+                            ABV = 5.1m,
                             BreweryId = 1,
                             Description = "Klasično hrvatsko lager pivo",
                             IBU = 20,
@@ -245,7 +254,7 @@ namespace Cugger.Migrations
                         new
                         {
                             Id = 2,
-                            ABV = 6.9000000000000004,
+                            ABV = 6.9m,
                             BreweryId = 2,
                             Description = "Aromatično IPA pivo s bogatom gorčinom",
                             IBU = 77,
@@ -256,7 +265,7 @@ namespace Cugger.Migrations
                         new
                         {
                             Id = 3,
-                            ABV = 4.2999999999999998,
+                            ABV = 4.3m,
                             BreweryId = 3,
                             Description = "Klasični Guinness Stout s karakterističnom tamnom bojom",
                             IBU = 45,
@@ -267,7 +276,7 @@ namespace Cugger.Migrations
                         new
                         {
                             Id = 4,
-                            ABV = 5.0,
+                            ABV = 5m,
                             BreweryId = 1,
                             Description = "Premium belgijsko pilsner pivo",
                             IBU = 30,
@@ -278,7 +287,7 @@ namespace Cugger.Migrations
                         new
                         {
                             Id = 5,
-                            ABV = 7.7000000000000002,
+                            ABV = 7.7m,
                             BreweryId = 2,
                             Description = "Ekstremno hopna IPA s intenzivnom gorčinom",
                             IBU = 100,
@@ -289,7 +298,7 @@ namespace Cugger.Migrations
                         new
                         {
                             Id = 6,
-                            ABV = 5.2000000000000002,
+                            ABV = 5.2m,
                             BreweryId = 4,
                             Description = "Zmajska Pale Ale - hrvatski craft klasik",
                             IBU = 35,
@@ -300,7 +309,7 @@ namespace Cugger.Migrations
                         new
                         {
                             Id = 7,
-                            ABV = 5.5999999999999996,
+                            ABV = 5.6m,
                             BreweryId = 5,
                             Description = "Trans-atlantska post-punk IPA",
                             IBU = 40,
@@ -311,7 +320,7 @@ namespace Cugger.Migrations
                         new
                         {
                             Id = 8,
-                            ABV = 4.7999999999999998,
+                            ABV = 4.8m,
                             BreweryId = 4,
                             Description = "Tradicionalno pšenično pivo s notama citrusa",
                             IBU = 12,
@@ -325,39 +334,41 @@ namespace Cugger.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BeerId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("ContentType")
                         .IsRequired()
                         .HasMaxLength(120)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(120)");
 
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasMaxLength(260)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(260)");
 
                     b.Property<string>("RelativePath")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<long>("SizeBytes")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("StoredFileName")
                         .IsRequired()
                         .HasMaxLength(260)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(260)");
 
                     b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int?>("UploadedByUserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -372,40 +383,42 @@ namespace Cugger.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("City")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(2000)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(2000)");
 
                     b.Property<int>("FoundedYear")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("LogoUrl")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("WebsiteUrl")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(300)");
 
                     b.HasKey("Id");
 
@@ -473,30 +486,32 @@ namespace Cugger.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BeerId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CheckInDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Comment")
                         .IsRequired()
                         .HasMaxLength(1000)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(1000)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<double>("Rating")
+                    b.Property<decimal>("Rating")
                         .HasColumnType("decimal(3,2)");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("VenueId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -516,7 +531,7 @@ namespace Cugger.Migrations
                             CheckInDate = new DateTime(2024, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Comment = "Odličan izbor za topli dan",
                             CreatedAt = new DateTime(2024, 3, 15, 19, 30, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 4.0,
+                            Rating = 4m,
                             UserId = 1,
                             VenueId = 1
                         },
@@ -527,7 +542,7 @@ namespace Cugger.Migrations
                             CheckInDate = new DateTime(2024, 3, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Comment = "Sjajna IPA, preporučujem svima",
                             CreatedAt = new DateTime(2024, 3, 16, 20, 15, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 4.5,
+                            Rating = 4.5m,
                             UserId = 1,
                             VenueId = 2
                         },
@@ -538,7 +553,7 @@ namespace Cugger.Migrations
                             CheckInDate = new DateTime(2024, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Comment = "Savršeno! Najbolja IPA koju sam pio",
                             CreatedAt = new DateTime(2024, 3, 17, 21, 45, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 5.0,
+                            Rating = 5m,
                             UserId = 2,
                             VenueId = 1
                         },
@@ -549,7 +564,7 @@ namespace Cugger.Migrations
                             CheckInDate = new DateTime(2024, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Comment = "Jako hopno, za prave IPA ljubitelje",
                             CreatedAt = new DateTime(2024, 3, 18, 19, 20, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 4.0,
+                            Rating = 4m,
                             UserId = 2,
                             VenueId = 2
                         },
@@ -560,7 +575,7 @@ namespace Cugger.Migrations
                             CheckInDate = new DateTime(2024, 3, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Comment = "Pravi Guinness u Dublinu - nema boljeg!",
                             CreatedAt = new DateTime(2024, 3, 19, 18, 0, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 5.0,
+                            Rating = 5m,
                             UserId = 3,
                             VenueId = 3
                         },
@@ -571,7 +586,7 @@ namespace Cugger.Migrations
                             CheckInDate = new DateTime(2024, 3, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Comment = "Dobro hrvatsko pivo, čvrst izbor",
                             CreatedAt = new DateTime(2024, 3, 20, 20, 30, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 3.5,
+                            Rating = 3.5m,
                             UserId = 3,
                             VenueId = 1
                         },
@@ -582,7 +597,7 @@ namespace Cugger.Migrations
                             CheckInDate = new DateTime(2024, 3, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Comment = "Klasičan Stout, topla preporuka",
                             CreatedAt = new DateTime(2024, 3, 21, 19, 0, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 4.5,
+                            Rating = 4.5m,
                             UserId = 1,
                             VenueId = 1
                         },
@@ -593,7 +608,7 @@ namespace Cugger.Migrations
                             CheckInDate = new DateTime(2024, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Comment = "Hrvatski craft je stvarno došao daleko",
                             CreatedAt = new DateTime(2024, 4, 5, 21, 10, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 4.5,
+                            Rating = 4.5m,
                             UserId = 4,
                             VenueId = 4
                         },
@@ -604,7 +619,7 @@ namespace Cugger.Migrations
                             CheckInDate = new DateTime(2024, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Comment = "Punk attitude u svakom gutljaju",
                             CreatedAt = new DateTime(2024, 4, 12, 22, 0, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 4.0,
+                            Rating = 4m,
                             UserId = 4,
                             VenueId = 5
                         },
@@ -615,7 +630,7 @@ namespace Cugger.Migrations
                             CheckInDate = new DateTime(2024, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Comment = "Osvježavajuće, za ljetni dan",
                             CreatedAt = new DateTime(2024, 4, 20, 17, 30, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 3.5,
+                            Rating = 3.5m,
                             UserId = 2,
                             VenueId = 4
                         });
@@ -625,16 +640,18 @@ namespace Cugger.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("FromUserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("ToUserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -693,27 +710,29 @@ namespace Cugger.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BeerId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("Comment")
                         .IsRequired()
                         .HasMaxLength(2000)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(2000)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("Likes")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
-                    b.Property<double>("Rating")
+                    b.Property<decimal>("Rating")
                         .HasColumnType("decimal(3,2)");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -731,7 +750,7 @@ namespace Cugger.Migrations
                             Comment = "Odličan balans između gorčine i arome",
                             CreatedAt = new DateTime(2024, 3, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Likes = 12,
-                            Rating = 4.5,
+                            Rating = 4.5m,
                             UserId = 1
                         },
                         new
@@ -741,7 +760,7 @@ namespace Cugger.Migrations
                             Comment = "Jedna od najboljih IPA-a koju sam ikad probao",
                             CreatedAt = new DateTime(2024, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Likes = 23,
-                            Rating = 5.0,
+                            Rating = 5m,
                             UserId = 2
                         },
                         new
@@ -751,7 +770,7 @@ namespace Cugger.Migrations
                             Comment = "Irski stout kakav treba biti",
                             CreatedAt = new DateTime(2024, 3, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Likes = 18,
-                            Rating = 5.0,
+                            Rating = 5m,
                             UserId = 3
                         },
                         new
@@ -761,7 +780,7 @@ namespace Cugger.Migrations
                             Comment = "Zmajska zna što radi - svaka čast.",
                             CreatedAt = new DateTime(2024, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Likes = 9,
-                            Rating = 4.5,
+                            Rating = 4.5m,
                             UserId = 4
                         });
                 });
@@ -770,33 +789,35 @@ namespace Cugger.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(250)");
 
                     b.Property<string>("City")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(100)");
 
-                    b.Property<double>("Latitude")
+                    b.Property<decimal>("Latitude")
                         .HasColumnType("decimal(9,6)");
 
-                    b.Property<double>("Longitude")
+                    b.Property<decimal>("Longitude")
                         .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(150)");
 
                     b.HasKey("Id");
 
@@ -809,8 +830,8 @@ namespace Cugger.Migrations
                             Address = "Ulica 1, broj 10",
                             City = "Zagreb",
                             Country = "Hrvatska",
-                            Latitude = 45.814999999999998,
-                            Longitude = 15.981999999999999,
+                            Latitude = 45.815m,
+                            Longitude = 15.982m,
                             Name = "The Beer Garden"
                         },
                         new
@@ -819,8 +840,8 @@ namespace Cugger.Migrations
                             Address = "Ilica 25",
                             City = "Zagreb",
                             Country = "Hrvatska",
-                            Latitude = 45.816000000000003,
-                            Longitude = 15.984999999999999,
+                            Latitude = 45.816m,
+                            Longitude = 15.985m,
                             Name = "Craft Beer Pub"
                         },
                         new
@@ -829,8 +850,8 @@ namespace Cugger.Migrations
                             Address = "O'Connell Street, broj 1",
                             City = "Dublin",
                             Country = "Irska",
-                            Latitude = 53.348999999999997,
-                            Longitude = -6.2599999999999998,
+                            Latitude = 53.349m,
+                            Longitude = -6.26m,
                             Name = "Irish Pub Dublin"
                         },
                         new
@@ -839,8 +860,8 @@ namespace Cugger.Migrations
                             Address = "Tkalčićeva 36",
                             City = "Zagreb",
                             Country = "Hrvatska",
-                            Latitude = 45.814999999999998,
-                            Longitude = 15.978,
+                            Latitude = 45.815m,
+                            Longitude = 15.978m,
                             Name = "Mali Medo"
                         },
                         new
@@ -849,8 +870,8 @@ namespace Cugger.Migrations
                             Address = "Ulica grada Vukovara 269",
                             City = "Zagreb",
                             Country = "Hrvatska",
-                            Latitude = 45.798000000000002,
-                            Longitude = 15.989000000000001,
+                            Latitude = 45.798m,
+                            Longitude = 15.989m,
                             Name = "Pivnica Pinta"
                         });
                 });
@@ -859,19 +880,21 @@ namespace Cugger.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
@@ -902,16 +925,18 @@ namespace Cugger.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -924,16 +949,18 @@ namespace Cugger.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -945,16 +972,16 @@ namespace Cugger.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -966,10 +993,10 @@ namespace Cugger.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -1008,16 +1035,16 @@ namespace Cugger.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Value")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 

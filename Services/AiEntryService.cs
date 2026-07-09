@@ -90,7 +90,7 @@ namespace Cugger.Services
             !string.IsNullOrWhiteSpace(_config["Gemini:ApiKey"])
             ||
             !string.IsNullOrWhiteSpace(
-                Environment.GetEnvironmentVariable("GEMINI_API_KEY")
+                System.Environment.GetEnvironmentVariable("GEMINI_API_KEY")
             );
 
 
@@ -100,8 +100,7 @@ namespace Cugger.Services
 
             if (string.IsNullOrWhiteSpace(key))
             {
-                key = Environment.GetEnvironmentVariable(
-                    "GEMINI_API_KEY");
+                key = System.Environment.GetEnvironmentVariable("GEMINI_API_KEY");
             }
 
 
@@ -306,31 +305,28 @@ Postojeći lokali:
 
 
 
-            var response =
-                await client.Models.GenerateContentAsync(
-                    model,
-                    prompt,
+            var response = await client.Models.GenerateContentAsync(model, prompt,
                     new GenerateContentConfig
                     {
-                        SystemInstruction =
-                            new Content(systemPrompt),
-
-                        ResponseMimeType =
-                            "application/json",
-
-                        ResponseSchema =
-                            schema
+                        SystemInstruction =new Content
+                        {
+                            Parts =
+                            [
+                                new Part
+                                {
+                                    Text = systemPrompt
+                                }
+                            ]
+                        },
+                        ResponseMimeType ="application/json",
+                        ResponseSchema=schema
                     });
 
 
 
             var json = response.Text;
 
-
-
-            _logger.LogInformation(
-                "Gemini odgovor: {Json}",
-                json);
+            _logger.LogInformation("Gemini odgovor: {Json}", json);
 
 
 

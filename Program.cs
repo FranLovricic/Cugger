@@ -38,9 +38,7 @@ builder.Services.AddDbContext<CuggerDbContext>(options =>
         var conn = builder.Configuration.GetConnectionString("MySql")
                 ?? throw new InvalidOperationException("Missing 'MySql' connection string.");
 
-        options.UseMySql(
-            conn,
-            ServerVersion.AutoDetect(conn));
+        options.UseMySql(conn, new MySqlServerVersion(new Version(8, 0, 0)));
     }
     else
     {

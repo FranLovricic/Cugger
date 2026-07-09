@@ -45,6 +45,15 @@ builder.Services.AddDbContext<CuggerDbContext>(options =>
                    ?? throw new InvalidOperationException("Missing 'SqlServerDocker' connection string.");
         options.UseSqlServer(conn);
     }
+    else if (string.Equals(dbProvider, "MySql", StringComparison.OrdinalIgnoreCase))
+    {
+        var conn = builder.Configuration.GetConnectionString("MySql")
+                ?? throw new InvalidOperationException("Missing 'MySql' connection string.");
+
+        options.UseMySql(
+            conn,
+            ServerVersion.AutoDetect(conn));
+    }
     else
     {
         var conn = builder.Configuration.GetConnectionString("Sqlite")

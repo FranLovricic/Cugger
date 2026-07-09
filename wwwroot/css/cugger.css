@@ -2344,216 +2344,82 @@ textarea.form-input {
   z-index: 0;
 }
 
-.page-header > * { position: relative; z-index: 1; }
+/* :not(.page-decor) — inače bi ovo pravilo (kasnije u datoteci, ista
+   specifičnost) pregazilo position: absolute na .page-decor */
+.page-header > :not(.page-decor) { position: relative; z-index: 1; }
 
 @media (max-width: 900px) {
   .page-decor { display: none; }
 }
 
-/* ===== 1) BEER TAP — Beer/Index ===== */
+/* ===== Minimalna line-art ikonografija (svih 7 stranica) =====
+   Kontura se jednom "iscrta" pri učitavanju (stroke-dashoffset preko
+   pathLength="1"), točke se zatim blago pojave — nakon toga sve miruje,
+   uz jedva primjetno "disanje" cijele ikone. */
 
-.tap-svg { width: 100%; height: 100%; overflow: visible; }
-.tap-drop {
-  animation: tap-fall 1.6s linear infinite;
-  fill: #F59E0B;
-}
-.tap-drop.d1 { animation-delay: 0s;    }
-.tap-drop.d2 { animation-delay: 0.45s; }
-.tap-drop.d3 { animation-delay: 0.9s;  }
-.tap-drop.d4 { animation-delay: 1.2s;  }
-
-@keyframes tap-fall {
-  0%   { transform: translateY(0) scaleY(1);   opacity: 0; }
-  10%  { transform: translateY(2px) scaleY(0.9); opacity: 1; }
-  85%  { transform: translateY(75px) scaleY(1.4); opacity: 0.8; }
-  100% { transform: translateY(85px) scaleY(0); opacity: 0; }
+.decor-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: decor-breathe 9s ease-in-out infinite;
 }
 
-.tap-glass-foam {
-  animation: tap-foam-rise 4s ease-in-out infinite;
-  transform-origin: center bottom;
-}
-@keyframes tap-foam-rise {
-  0%, 100% { transform: scaleY(0.7); }
-  50%      { transform: scaleY(1); }
-}
-
-/* ===== 2) BREWERY SMOKE — Brewery/Index ===== */
-
-.brewery-svg { width: 100%; height: 100%; overflow: visible; }
-.smoke-puff {
-  fill: rgba(254, 243, 199, 0.5);
-  animation: smoke-rise 4s ease-out infinite;
-  transform-origin: center bottom;
-}
-.smoke-puff.s1 { animation-delay: 0s;   }
-.smoke-puff.s2 { animation-delay: 1s;   }
-.smoke-puff.s3 { animation-delay: 2s;   }
-.smoke-puff.s4 { animation-delay: 0.5s; }
-.smoke-puff.s5 { animation-delay: 1.5s; }
-.smoke-puff.s6 { animation-delay: 2.5s; }
-
-@keyframes smoke-rise {
-  0%   { transform: translateY(0) scale(0.4);    opacity: 0; }
-  20%  { opacity: 0.7; }
-  100% { transform: translateY(-90px) scale(1.6); opacity: 0; }
-}
-
-/* ===== 3) MAP PIN PULSE — Venue/Index ===== */
-
-.pin-svg { width: 100%; height: 100%; overflow: visible; }
-.pin-body {
-  animation: pin-bounce 2.5s ease-in-out infinite;
-  transform-origin: center bottom;
-}
-@keyframes pin-bounce {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-12px); }
-}
-
-.pin-pulse {
+/* Glavne konture */
+.decor-line {
   fill: none;
   stroke: var(--primary);
-  stroke-width: 2;
-  animation: pin-pulse-out 2.5s ease-out infinite;
-  transform-origin: 100px 165px;
-  opacity: 0;
-}
-.pin-pulse.p1 { animation-delay: 0s;    }
-.pin-pulse.p2 { animation-delay: 0.8s;  }
-.pin-pulse.p3 { animation-delay: 1.6s;  }
-
-@keyframes pin-pulse-out {
-  0%   { transform: scale(0.2); opacity: 0.8; stroke-width: 3; }
-  100% { transform: scale(1.8); opacity: 0;   stroke-width: 0.5; }
-}
-
-/* ===== 4) CLINKING GLASSES — CheckIn/Index (feed) ===== */
-
-.clink-svg { width: 100%; height: 100%; overflow: visible; }
-
-.glass-left  { animation: clink-left  2s ease-in-out infinite; transform-origin: 60px 180px; }
-.glass-right { animation: clink-right 2s ease-in-out infinite; transform-origin: 140px 180px; }
-
-@keyframes clink-left {
-  0%, 100% { transform: rotate(-15deg) translateX(0); }
-  45%      { transform: rotate(-3deg)  translateX(8px); }
-  50%      { transform: rotate(-3deg)  translateX(8px); }
-  55%      { transform: rotate(-3deg)  translateX(8px); }
-}
-@keyframes clink-right {
-  0%, 100% { transform: rotate(15deg) translateX(0); }
-  45%      { transform: rotate(3deg)  translateX(-8px); }
-  50%      { transform: rotate(3deg)  translateX(-8px); }
-  55%      { transform: rotate(3deg)  translateX(-8px); }
-}
-
-.clink-spark {
-  fill: var(--primary-light);
-  opacity: 0;
-  animation: clink-flash 2s ease-out infinite;
-  transform-origin: 100px 90px;
-}
-.clink-spark.s1 { animation-delay: 0.45s; }
-.clink-spark.s2 { animation-delay: 0.5s;  }
-.clink-spark.s3 { animation-delay: 0.55s; }
-
-@keyframes clink-flash {
-  0%, 35% { opacity: 0; transform: scale(0); }
-  50%     { opacity: 1; transform: scale(1.5); }
-  70%     { opacity: 0; transform: scale(2);   }
-  100%    { opacity: 0; transform: scale(2);   }
-}
-
-/* ===== 5) FLOATING STARS — Review/Index ===== */
-
-.stars-svg { width: 100%; height: 100%; overflow: visible; }
-.float-star {
-  animation: star-float 5s ease-in-out infinite;
-  transform-origin: center;
-  opacity: 0;
-}
-.float-star.s1 { animation-delay: 0s;   }
-.float-star.s2 { animation-delay: 0.6s; }
-.float-star.s3 { animation-delay: 1.2s; }
-.float-star.s4 { animation-delay: 1.8s; }
-.float-star.s5 { animation-delay: 2.4s; }
-
-@keyframes star-float {
-  0%   { transform: translateY(40px) rotate(-15deg) scale(0.5); opacity: 0; }
-  20%  { opacity: 1; }
-  60%  { opacity: 1; }
-  100% { transform: translateY(-60px) rotate(20deg) scale(1.1); opacity: 0; }
-}
-
-/* ===== 6) AVATAR BUBBLES — User/Index ===== */
-
-.avatars-svg { width: 100%; height: 100%; overflow: visible; }
-.avatar-bubble {
-  animation: avatar-pop 4s ease-in-out infinite;
-  transform-origin: center;
-  opacity: 0;
-  transform-box: fill-box;
-}
-.avatar-bubble.a1 { animation-delay: 0s;   }
-.avatar-bubble.a2 { animation-delay: 0.5s; }
-.avatar-bubble.a3 { animation-delay: 1s;   }
-.avatar-bubble.a4 { animation-delay: 1.5s; }
-.avatar-bubble.a5 { animation-delay: 2s;   }
-.avatar-bubble.a6 { animation-delay: 2.5s; }
-
-@keyframes avatar-pop {
-  0%   { transform: scale(0); opacity: 0; }
-  20%  { transform: scale(1.15); opacity: 1; }
-  35%  { transform: scale(1); }
-  70%  { transform: scale(1); opacity: 1; }
-  100% { transform: scale(0.5); opacity: 0; }
-}
-
-/* ===== 7) FRIENDSHIP CONNECT — Friendship/Index ===== */
-
-.friend-svg { width: 100%; height: 100%; overflow: visible; }
-.friend-line {
-  stroke: var(--primary);
-  stroke-width: 3;
-  fill: none;
+  stroke-width: 2.5;
   stroke-linecap: round;
-  stroke-dasharray: 120;
-  stroke-dashoffset: 120;
-  animation: line-draw 3s ease-in-out infinite;
-}
-@keyframes line-draw {
-  0%   { stroke-dashoffset: 120; }
-  40%  { stroke-dashoffset: 0; }
-  60%  { stroke-dashoffset: 0; }
-  100% { stroke-dashoffset: -120; }
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: decor-draw 1.1s var(--ease) forwards;
 }
 
-.friend-heart {
-  animation: heart-beat 3s ease-in-out infinite;
-  transform-origin: center;
-  opacity: 0;
-}
-@keyframes heart-beat {
-  0%, 35% { transform: scale(0); opacity: 0; }
-  45%     { transform: scale(1.4); opacity: 1; }
-  55%     { transform: scale(1); opacity: 1; }
-  60%     { transform: scale(1.3); opacity: 1; }
-  68%     { transform: scale(1); opacity: 1; }
-  90%     { transform: scale(1); opacity: 1; }
-  100%    { transform: scale(0.5); opacity: 0; }
+/* Sekundarne linije — tanje i prigušene, crtaju se s malim zakašnjenjem */
+.decor-accent {
+  fill: none;
+  stroke: var(--primary-light);
+  stroke-width: 2;
+  opacity: 0.55;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: decor-draw 1.1s var(--ease) 0.3s forwards;
 }
 
-.friend-dot {
+/* Točke / mjehurići — samo blagi fade-in nakon crtanja */
+.decor-dot {
   fill: var(--primary);
-  animation: dot-pulse 3s ease-in-out infinite;
-  transform-origin: center;
+  opacity: 0;
+  animation: decor-fade 0.5s ease-out 1s forwards;
 }
-.friend-dot.d2 { animation-delay: 0.3s; }
-@keyframes dot-pulse {
-  0%, 100% { transform: scale(1); }
-  45%      { transform: scale(1.3); }
-  55%      { transform: scale(1.3); }
+
+/* Stupnjevana kašnjenja za slojevito iscrtavanje */
+.decor-line.d2   { animation-delay: 0.25s; }
+.decor-line.d3   { animation-delay: 0.5s;  }
+.decor-accent.d2 { animation-delay: 0.55s; }
+.decor-accent.d3 { animation-delay: 0.8s;  }
+.decor-dot.d2    { animation-delay: 1.15s; }
+.decor-dot.d3    { animation-delay: 1.3s;  }
+
+@keyframes decor-draw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes decor-fade {
+  to { opacity: 0.7; }
+}
+@keyframes decor-breathe {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+/* Pristupačnost: bez animacija — ikona odmah potpuno vidljiva */
+@media (prefers-reduced-motion: reduce) {
+  .decor-svg { animation: none; }
+  .decor-line, .decor-accent { animation: none; stroke-dashoffset: 0; }
+  .decor-dot { animation: none; opacity: 0.7; }
 }
 
 /* ========== Subtle foam-line dividers ========== */

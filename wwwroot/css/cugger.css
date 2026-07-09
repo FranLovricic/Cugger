@@ -1559,6 +1559,10 @@ textarea.form-input {
   border-color: var(--danger);
 }
 
+.btn.btn-sm.btn-danger {
+  padding: 0.875rem 2rem !important;
+}
+
 .btn-ghost {
   background: transparent;
   color: var(--text-secondary);

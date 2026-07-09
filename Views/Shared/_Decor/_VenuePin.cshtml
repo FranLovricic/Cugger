@@ -1,26 +1,12 @@
-@* Map pin with bouncing motion and concentric pulse rings *@
+@* Minimalna line-art oznaka lokacije (map pin) *@
 <div class="page-decor">
-    <svg class="pin-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <!-- Ground / pulse rings -->
-        <ellipse cx="100" cy="165" rx="50" ry="8" fill="rgba(0,0,0,0.25)" />
-        <circle class="pin-pulse p1" cx="100" cy="165" r="20" />
-        <circle class="pin-pulse p2" cx="100" cy="165" r="20" />
-        <circle class="pin-pulse p3" cx="100" cy="165" r="20" />
-
-        <!-- Pin body (drops in) -->
-        <g class="pin-body">
-            <!-- Tear-drop pin shape -->
-            <path d="M 100 40
-                     C 70 40, 55 65, 55 95
-                     C 55 130, 100 165, 100 165
-                     C 100 165, 145 130, 145 95
-                     C 145 65, 130 40, 100 40 Z"
-                  fill="#F59E0B"
-                  stroke="#92400E" stroke-width="3" />
-            <!-- Inner hole -->
-            <circle cx="100" cy="92" r="18" fill="#1a120a" />
-            <!-- Beer mug icon inside -->
-            <text x="100" y="100" font-size="22" text-anchor="middle" fill="#FCD34D">🍺</text>
-        </g>
+    <svg class="decor-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Pin -->
+        <path class="decor-line" pathLength="1"
+              d="M 100 168 C 100 168 57 122 57 90 C 57 63 76 44 100 44 C 124 44 143 63 143 90 C 143 122 100 168 100 168 Z" />
+        <!-- Unutarnji krug -->
+        <circle class="decor-accent" pathLength="1" cx="100" cy="88" r="16" />
+        <!-- Sjena / tlo -->
+        <path class="decor-accent d3" pathLength="1" d="M 74 180 Q 100 187 126 180" />
     </svg>
 </div>

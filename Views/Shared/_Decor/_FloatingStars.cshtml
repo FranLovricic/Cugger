@@ -1,33 +1,13 @@
-@* Floating star ratings rising up and fading out *@
+@* Minimalna line-art zvijezda ocjene s dvije manje zvijezde *@
 <div class="page-decor">
-    <svg class="stars-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs>
-            <symbol id="star" viewBox="-12 -12 24 24">
-                <polygon points="0,-11 3,-3 11,-3 5,2 7,11 0,6 -7,11 -5,2 -11,-3 -3,-3" fill="#FCD34D" stroke="#F59E0B" stroke-width="1" />
-            </symbol>
-        </defs>
-
-        <g transform="translate(40, 100)">
-            <use class="float-star s1" href="#star" width="24" height="24" x="-12" y="-12" />
-        </g>
-        <g transform="translate(80, 110)">
-            <use class="float-star s2" href="#star" width="32" height="32" x="-16" y="-16" />
-        </g>
-        <g transform="translate(120, 100)">
-            <use class="float-star s3" href="#star" width="40" height="40" x="-20" y="-20" />
-        </g>
-        <g transform="translate(160, 110)">
-            <use class="float-star s4" href="#star" width="28" height="28" x="-14" y="-14" />
-        </g>
-        <g transform="translate(100, 80)">
-            <use class="float-star s5" href="#star" width="36" height="36" x="-18" y="-18" />
-        </g>
-
-        <!-- Pen at bottom -->
-        <g transform="translate(80, 160) rotate(-25)">
-            <rect x="0" y="0" width="60" height="6" rx="2" fill="#92400E" />
-            <polygon points="60,-2 70,3 60,8" fill="#FCD34D" />
-            <rect x="0" y="0" width="10" height="6" rx="2" fill="#FEF3C7" />
-        </g>
+    <svg class="decor-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Velika zvijezda -->
+        <path class="decor-line" pathLength="1"
+              d="M 100 60 L 111.2 92.6 L 145.7 93.2 L 118.1 113.9 L 128.2 146.8 L 100 127 L 71.8 146.8 L 81.9 113.9 L 54.3 93.2 L 88.8 92.6 Z" />
+        <!-- Male zvijezde -->
+        <path class="decor-accent d2" pathLength="1"
+              d="M 52 44 L 55.4 53.4 L 65 53.6 L 57.4 59.6 L 60.2 68.8 L 52 63.4 L 43.8 68.8 L 46.6 59.6 L 39 53.6 L 48.6 53.4 Z" />
+        <path class="decor-accent d3" pathLength="1"
+              d="M 154 62 L 156.6 69 L 164 69.2 L 158.2 73.8 L 160.2 80.8 L 154 76.6 L 147.8 80.8 L 149.8 73.8 L 144 69.2 L 151.4 69 Z" />
     </svg>
 </div>

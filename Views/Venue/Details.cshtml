@@ -30,7 +30,7 @@
             <a href="/Venue" class="btn btn-secondary">← Nazad</a>
             @if (User.IsInRole("Admin"))
             {
-                <a href="/Venue/Edit/@Model.Id" class="btn btn-ghost">Uredi</a>
+                <a href="/Venue/Edit/@Model.Id" class="btn btn-ghost btn-sm">Uredi</a>
                 <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;"
                       onsubmit="return confirm('Sigurno želiš obrisati ovaj lokal? (samo ako nema check-inova)');">
                     @Html.AntiForgeryToken()

@@ -62,7 +62,7 @@
             }
             @if (User.IsInRole("Admin"))
             {
-                <a href="/Beer/Edit/@Model.Id" class="btn btn-ghost">Uredi</a>
+                <a href="/Beer/Edit/@Model.Id" class="btn btn-ghost btn-sm">Uredi</a>
                 <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;"
                       onsubmit="return confirm('Sigurno želiš obrisati ovo pivo? (samo ako nema check-inova/recenzija)');">
                     @Html.AntiForgeryToken()

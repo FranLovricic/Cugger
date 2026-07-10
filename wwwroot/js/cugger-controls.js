@@ -429,7 +429,7 @@
                 target.innerHTML = html;
 
                 // re-arm reveal/stagger animations on freshly inserted nodes
-                target.querySelectorAll('.stagger, .reveal').forEach(el => el.classList.add('is-visible'));
+                target.querySelectorAll('.stagger, .reveal').forEach(el => el.classList.add('visible'));
             } catch (err) {
                 if (err.name !== 'AbortError') {
                     console.error('AJAX search error', err);

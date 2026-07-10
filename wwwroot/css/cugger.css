@@ -715,6 +715,7 @@ a { color: inherit; text-decoration: none; }
 
 .header-actions {
   display: flex;
+  align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
   flex-shrink: 0;
@@ -789,6 +790,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: 3rem;
   font-weight: 600;
   font-size: 0.9rem;
+  line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.4s var(--ease);
@@ -822,24 +824,13 @@ a { color: inherit; text-decoration: none; }
 
 .btn-ghost {
   background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+  border-color: var(--primary);
   color: var(--primary);
-  padding: 0;
-  font-weight: 600;
-}
-
-.btn-ghost::after {
-  content: ' →';
-  transition: transform 0.3s var(--ease);
-  display: inline-block;
-}
-
-.btn-ghost:hover::after {
-  transform: translateX(4px);
-}
-
-.btn-sm {
-  padding: 0.5rem 1.25rem;
-  font-size: 0.8rem;
 }
 
 /* ========== LINK ARROW ========== */
@@ -1560,16 +1551,6 @@ textarea.form-input {
 .btn-danger:hover {
   background: rgba(239, 68, 68, .12);
   border-color: var(--danger);
-}
-
-.btn-ghost {
-  background: transparent;
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
-}
-.btn-ghost:hover {
-  border-color: var(--primary);
-  color: var(--primary);
 }
 
 .like-btn {
